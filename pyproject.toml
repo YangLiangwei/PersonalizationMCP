@@ -1,0 +1,41 @@
+[project]
+name = "personalhub"
+version = "1.0.0"
+description = "A unified personal data hub built on MCP that allows AI assistants to access your digital life from Steam, YouTube, Bilibili and more platforms"
+authors = [
+    {name = "Liangwei Yang", email = "your.email@example.com"}
+]
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.12"
+keywords = ["mcp", "personal-hub", "steam", "youtube", "bilibili", "ai", "assistant", "data-integration"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
+]
+dependencies = [
+    "httpx>=0.28.1",
+    "mcp[cli]>=1.13.1",
+    "nest-asyncio>=1.6.0",
+    "python-dotenv>=1.1.1",
+]
+
+[project.urls]
+Homepage = "https://github.com/yourusername/PersonalHub"
+Repository = "https://github.com/yourusername/PersonalHub"
+Issues = "https://github.com/yourusername/PersonalHub/issues"
+
+[project.scripts]
+personalhub = "server:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["*.py"]
