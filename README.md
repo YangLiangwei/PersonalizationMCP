@@ -12,7 +12,7 @@ A unified personal data hub built on MCP (Model Context Protocol) that allows AI
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/yourusername/PersonalHub.git
+   git clone https://github.com/YangLiangwei/PersonalHub.git
    cd PersonalHub
    ```
 
