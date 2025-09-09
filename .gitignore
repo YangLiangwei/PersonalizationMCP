@@ -22,6 +22,7 @@ config
 myinfo.json
 youtube_tokens.json
 platforms/youtube/youtube_tokens.json
+platforms/spotify/spotify_tokens.json
 
 # IDE and editor files
 .vscode/
