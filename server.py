@@ -11,6 +11,7 @@ from mcp.server.fastmcp import FastMCP
 from platforms.steam.steam_mcp import setup_steam_mcp
 from platforms.youtube.youtube_mcp import setup_youtube_mcp
 from platforms.bilibili.bilibili_mcp import setup_bilibili_mcp
+from platforms.spotify.spotify_mcp import setup_spotify_mcp
 
 # Create main MCP server
 mcp = FastMCP("PersonalHub")
@@ -38,8 +39,10 @@ def setup_all_platforms():
     # Bilibili integration
     setup_bilibili_mcp(mcp)
     
+    # Spotify integration
+    setup_spotify_mcp(mcp)
+    
     # Future platform integrations can be added here:
-    # setup_spotify_mcp(mcp)
     # setup_twitter_mcp(mcp)
     # setup_github_mcp(mcp)
 
@@ -49,23 +52,25 @@ def get_personalization_status() -> str:
     steam_configured = bool(os.getenv("STEAM_API_KEY") and os.getenv("STEAM_USER_ID"))
     youtube_configured = bool(os.getenv("YOUTUBE_API_KEY"))
     bilibili_configured = bool(os.getenv("BILIBILI_SESSDATA") and os.getenv("BILIBILI_BILI_JCT"))
+    spotify_configured = bool(os.getenv("SPOTIFY_CLIENT_ID") and os.getenv("SPOTIFY_CLIENT_SECRET"))
     
     status_info = f"""PersonalHub Server Status:
 
 🎮 Steam Integration: {'✅ Active' if steam_configured else '❌ Not configured'}
 🎥 YouTube Integration: {'✅ Active' if youtube_configured else '❌ Not configured'}
 📺 Bilibili Integration: {'✅ Active' if bilibili_configured else '❌ Not configured'}
-🎵 Spotify Integration: ⏳ Coming soon
+🎵 Spotify Integration: {'✅ Active' if spotify_configured else '❌ Not configured'}
 🐦 Twitter Integration: ⏳ Coming soon
 💻 GitHub Integration: ⏳ Coming soon
 
-Server Version: 1.2.0
-Total Platforms: {sum([steam_configured, youtube_configured, bilibili_configured])} active, 3 planned
+Server Version: 1.3.0
+Total Platforms: {sum([steam_configured, youtube_configured, bilibili_configured, spotify_configured])} active, 2 planned
 
 Configuration Status:
 - Steam API: {'Ready' if steam_configured else 'Needs setup'}
 - YouTube API: {'Ready' if youtube_configured else 'Needs setup'}
 - Bilibili API: {'Ready' if bilibili_configured else 'Needs setup'}
+- Spotify API: {'Ready' if spotify_configured else 'Needs setup'}
 """
     return status_info
 

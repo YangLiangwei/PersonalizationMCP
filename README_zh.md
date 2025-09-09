@@ -87,6 +87,14 @@
 - 获取关注列表和用户上传的视频
 - 浏览"稍后再看"列表和个人收藏
 
+### 🎵 Spotify 集成
+- 完整的 OAuth2 认证和自动令牌管理
+- 获取用户档案和音乐库数据
+- 访问热门艺术家、曲目和最近播放的音乐
+- 社交功能：关注/取消关注艺术家和播放列表
+- 音乐库管理：保存的曲目、专辑、节目、单集、有声读物
+- 播放列表操作：查看和管理个人播放列表
+
 ## 📦 安装和设置
 
 ### 1. 安装依赖
@@ -205,6 +213,23 @@ BILIBILI_BUVID3=your_bilibili_buvid3_cookie
 - Bilibili cookies 会定期过期，需要更新
 - 请保护好这些 cookies，因为它们提供对你个人 Bilibili 数据的访问权限
 - 不要公开分享这些 cookies
+
+### 🎵 Spotify API 设置
+
+> 📖 **详细设置指南**：[platforms/spotify/README.md](platforms/spotify/README.md) | [中文指南](platforms/spotify/README_zh.md)
+
+**快速总结**：
+1. 在 [Spotify 开发者控制台](https://developer.spotify.com/dashboard) 创建 Spotify 应用
+2. 在应用设置中配置重定向 URI
+3. 使用 MCP 工具进行 OAuth2 认证和自动令牌管理
+
+**配置：**
+```bash
+SPOTIFY_CLIENT_ID=your_spotify_client_id_here
+SPOTIFY_CLIENT_SECRET=your_spotify_client_secret_here
+SPOTIFY_REDIRECT_URI=https://example.com/callback
+# OAuth2 令牌在认证后自动管理
+```
 
 ## 🖥️ Cursor 配置
 
@@ -342,12 +367,34 @@ python3 auto_refresh_youtube_token.py
 - `get_bilibili_coin_videos()` - 获取你投币的视频
 - `get_bilibili_toview_list()` - 获取你的"稍后再看"列表
 
+### 🎵 Spotify 工具（共 17 个）
+
+**认证和配置工具（7 个）：**
+- `test_spotify_credentials()` - 测试 API 凭据
+- `setup_spotify_oauth()` - 初始化 OAuth 流程
+- `complete_spotify_oauth()` - 完成 OAuth 认证
+- `get_spotify_token_status()` - 获取令牌状态
+- `refresh_spotify_token()` - 手动刷新令牌
+
+**音乐发现和社交工具（9 个）：**
+- `get_current_user_profile()` - 获取你的 Spotify 档案
+- `get_user_top_items()` - 获取热门艺术家/曲目
+- `get_user_recently_played()` - 获取最近播放的音乐
+- `get_followed_artists()` - 获取关注的艺术家
+- `follow_artists_or_users()` / `unfollow_artists_or_users()` - 社交功能
+
+**音乐库和播放列表工具（6 个）：**
+- `get_user_saved_tracks()` / `get_user_saved_albums()` - 音乐库管理
+- `get_user_saved_shows()` / `get_user_saved_episodes()` - 播客内容
+- `get_current_user_playlists()` / `get_playlist_items()` - 播放列表操作
+
 ### 🔧 系统工具
 - `test_connection()` - 测试 MCP 服务器是否正常工作
 - `get_personalization_status()` - 获取整体平台状态
 - `test_steam_credentials()` - 测试 Steam API 配置
 - `test_youtube_credentials()` - 测试 YouTube API 配置
 - `test_bilibili_credentials()` - 测试 Bilibili 配置
+- `test_spotify_credentials()` - 测试 Spotify API 配置
 
 ## 💬 使用示例
 
@@ -367,6 +414,12 @@ python3 auto_refresh_youtube_token.py
 - "分析我的游戏习惯和偏好"
 - "我最常看什么类型的 YouTube 内容？"
 - "显示我的 Bilibili 收藏和点赞视频"
+
+### 音乐和音频分析
+- "我最近在 Spotify 上最常听哪些艺术家？"
+- "显示我的播放模式并发现音乐偏好"
+- "我这个月的热门曲目是什么？"
+- "基于我的 Spotify 数据寻找新的音乐推荐"
 
 ## 🚀 开发
 

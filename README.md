@@ -54,6 +54,14 @@ A unified personal data hub built on MCP (Model Context Protocol) that allows AI
 - Get following list and user-uploaded videos
 - Browse "to view later" list and personal collections
 
+### 🎵 Spotify Integration
+- Complete OAuth2 authentication with automatic token management
+- Get user profile and music library data
+- Access top artists, tracks, and recently played music
+- Social features: follow/unfollow artists and playlists
+- Library management: saved tracks, albums, shows, episodes, audiobooks
+- Playlist operations: view and manage personal playlists
+
 ## 📦 Installation and Setup
 
 ### 1. Install Dependencies
@@ -153,6 +161,23 @@ BILIBILI_BILI_JCT=your_bilibili_bili_jct_cookie
 BILIBILI_BUVID3=your_bilibili_buvid3_cookie
 ```
 
+### 🎵 Spotify API Setup
+
+> 📖 **Detailed setup guide**: [platforms/spotify/README.md](platforms/spotify/README.md) | [中文指南](platforms/spotify/README_zh.md)
+
+**Quick summary**: 
+1. Create a Spotify app in [Spotify Developer Dashboard](https://developer.spotify.com/dashboard)
+2. Configure redirect URIs in your app settings
+3. Use MCP tools for OAuth2 authentication with automatic token management
+
+**Configuration:**
+```bash
+SPOTIFY_CLIENT_ID=your_spotify_client_id_here
+SPOTIFY_CLIENT_SECRET=your_spotify_client_secret_here
+SPOTIFY_REDIRECT_URI=https://example.com/callback
+# OAuth2 tokens are managed automatically after authentication
+```
+
 ## 🖥️ Cursor Configuration
 
 Add the MCP server to your Cursor settings:
@@ -234,20 +259,6 @@ This system implements intelligent YouTube OAuth2 token management with the foll
 2. **Auto-refresh tokens from token file** (Recommended method)
 3. **Tokens from environment variables** (Backup method)
 
-### 📁 File Descriptions
-- `youtube_tokens.json` - Automatically generated and maintained token file
-- `youtube_oauth_helper.py` - OAuth2 authentication helper script
-- `auto_refresh_youtube_token.py` - Manual token refresh tool
-
-### 🛠️ Usage
-```bash
-# Initial OAuth2 token setup
-cd platforms/youtube
-python3 youtube_oauth_helper.py
-
-# Manual token refresh (optional)
-python3 auto_refresh_youtube_token.py
-```
 
 The system automatically handles all token management - no manual maintenance required!
 
@@ -288,12 +299,34 @@ The system automatically handles all token management - no manual maintenance re
 - `get_bilibili_coin_videos()` - Get videos you've given coins to
 - `get_bilibili_toview_list()` - Get your "to view later" list
 
+### 🎵 Spotify Tools (17 Total)
+
+**Authentication & Configuration (7 tools):**
+- `test_spotify_credentials()` - Test API credentials
+- `setup_spotify_oauth()` - Initialize OAuth flow
+- `complete_spotify_oauth()` - Complete OAuth authentication
+- `get_spotify_token_status()` - Get token status
+- `refresh_spotify_token()` - Manual token refresh
+
+**Music Discovery & Social (9 tools):**
+- `get_current_user_profile()` - Get your Spotify profile
+- `get_user_top_items()` - Get top artists/tracks
+- `get_user_recently_played()` - Get recently played music
+- `get_followed_artists()` - Get followed artists
+- `follow_artists_or_users()` / `unfollow_artists_or_users()` - Social features
+
+**Library & Playlists (6 tools):**
+- `get_user_saved_tracks()` / `get_user_saved_albums()` - Library management
+- `get_user_saved_shows()` / `get_user_saved_episodes()` - Podcast content
+- `get_current_user_playlists()` / `get_playlist_items()` - Playlist operations
+
 ### 🔧 System Tools
 - `test_connection()` - Test if MCP server is working
 - `get_personalization_status()` - Get overall platform status
 - `test_steam_credentials()` - Test Steam API configuration
 - `test_youtube_credentials()` - Test YouTube API configuration
 - `test_bilibili_credentials()` - Test Bilibili configuration
+- `test_spotify_credentials()` - Test Spotify API configuration
 
 ## 💬 Usage Examples
 
@@ -313,6 +346,12 @@ The system automatically handles all token management - no manual maintenance re
 - "Analyze my gaming habits and preferences"
 - "What type of YouTube content do I watch most?"
 - "Show me my Bilibili favorites and liked videos"
+
+### Music & Audio Analysis
+- "What artists have I been listening to most lately on Spotify?"
+- "Show me my recently played music and find patterns"
+- "What are my top tracks from the past month?"
+- "Find new music recommendations based on my Spotify data"
 
 ## 🚀 Development
 
