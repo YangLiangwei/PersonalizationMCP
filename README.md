@@ -62,6 +62,14 @@ A unified personal data hub built on MCP (Model Context Protocol) that allows AI
 - Library management: saved tracks, albums, shows, episodes, audiobooks
 - Playlist operations: view and manage personal playlists
 
+### 💬 Reddit Integration
+- Complete OAuth2 authentication with automatic token management
+- Access user account information, karma breakdown, and preferences
+- Get submitted posts, comments, and user activity overview
+- View saved content, hidden posts, and voting history
+- Explore subscribed communities and moderation permissions
+- Message system access (inbox, unread, sent messages)
+
 ## 📦 Installation and Setup
 
 ### 1. Install Dependencies
@@ -178,6 +186,23 @@ SPOTIFY_REDIRECT_URI=https://example.com/callback
 # OAuth2 tokens are managed automatically after authentication
 ```
 
+### 💬 Reddit API Setup
+
+> 📖 **Detailed setup guide**: [platforms/reddit/README.md](platforms/reddit/README.md) | [中文指南](platforms/reddit/README_zh.md)
+
+**Quick summary**: 
+1. Create a Reddit app in [Reddit Apps](https://www.reddit.com/prefs/apps)
+2. Configure as "web app" with redirect URI
+3. Use MCP tools for OAuth2 authentication with automatic token management
+
+**Configuration:**
+```bash
+REDDIT_CLIENT_ID=your_reddit_client_id_here
+REDDIT_CLIENT_SECRET=your_reddit_client_secret_here
+REDDIT_REDIRECT_URI=http://localhost:8888/callback
+# OAuth2 tokens are managed automatically after authentication
+```
+
 ## 🖥️ Cursor Configuration
 
 Add the MCP server to your Cursor settings:
@@ -195,7 +220,9 @@ Add the MCP server to your Cursor settings:
         "YOUTUBE_API_KEY": "your_youtube_api_key",
         "BILIBILI_SESSDATA": "your_bilibili_sessdata",
         "BILIBILI_BILI_JCT": "your_bilibili_bili_jct",
-        "BILIBILI_BUVID3": "your_bilibili_buvid3"
+        "BILIBILI_BUVID3": "your_bilibili_buvid3",
+        "REDDIT_CLIENT_ID": "your_reddit_client_id",
+        "REDDIT_CLIENT_SECRET": "your_reddit_client_secret"
       }
     }
   }
@@ -215,7 +242,9 @@ Add the MCP server to your Cursor settings:
         "YOUTUBE_API_KEY": "your_youtube_api_key",
         "BILIBILI_SESSDATA": "your_bilibili_sessdata",
         "BILIBILI_BILI_JCT": "your_bilibili_bili_jct",
-        "BILIBILI_BUVID3": "your_bilibili_buvid3"
+        "BILIBILI_BUVID3": "your_bilibili_buvid3",
+        "REDDIT_CLIENT_ID": "your_reddit_client_id",
+        "REDDIT_CLIENT_SECRET": "your_reddit_client_secret"
       }
     }
   }
@@ -235,7 +264,9 @@ Add the MCP server to your Cursor settings:
         "YOUTUBE_API_KEY": "your_youtube_api_key",
         "BILIBILI_SESSDATA": "your_bilibili_sessdata",
         "BILIBILI_BILI_JCT": "your_bilibili_bili_jct",
-        "BILIBILI_BUVID3": "your_bilibili_buvid3"
+        "BILIBILI_BUVID3": "your_bilibili_buvid3",
+        "REDDIT_CLIENT_ID": "your_reddit_client_id",
+        "REDDIT_CLIENT_SECRET": "your_reddit_client_secret"
       }
     }
   }
@@ -320,6 +351,38 @@ The system automatically handles all token management - no manual maintenance re
 - `get_user_saved_shows()` / `get_user_saved_episodes()` - Podcast content
 - `get_current_user_playlists()` / `get_playlist_items()` - Playlist operations
 
+### 💬 Reddit Tools (25 Total)
+
+**Authentication & Configuration (6 tools):**
+- `test_reddit_credentials()` - Test API credentials
+- `setup_reddit_oauth()` - Initialize OAuth flow
+- `complete_reddit_oauth()` - Complete OAuth authentication
+- `get_reddit_token_status()` - Get token status
+- `refresh_reddit_token()` - Manual token refresh
+- `auto_refresh_reddit_token_if_needed()` - Auto token management
+
+**Account Information (6 tools):**
+- `get_user_subreddits()` - Get subscribed communities
+- `get_user_trophies()` - Get Reddit trophies and achievements
+- `get_user_preferences()` - Get account settings
+- `get_user_karma_breakdown()` - Get karma distribution
+- `get_moderated_subreddits()` - Get moderated communities
+- `get_contributor_subreddits()` - Get contributor permissions
+
+**Content & Activity (10 tools):**
+- `get_user_submitted_posts()` - Get submitted posts
+- `get_user_comments()` - Get comment history
+- `get_user_overview()` - Get mixed activity timeline
+- `get_saved_content()` - Get saved posts/comments
+- `get_hidden_posts()` - Get hidden content
+- `get_upvoted_content()` - Get upvoted content
+- `get_downvoted_content()` - Get downvoted content
+
+**Messaging (3 tools):**
+- `get_inbox_messages()` - Get inbox messages
+- `get_unread_messages()` - Get unread messages
+- `get_sent_messages()` - Get sent messages
+
 ### 🔧 System Tools
 - `test_connection()` - Test if MCP server is working
 - `get_personalization_status()` - Get overall platform status
@@ -327,6 +390,7 @@ The system automatically handles all token management - no manual maintenance re
 - `test_youtube_credentials()` - Test YouTube API configuration
 - `test_bilibili_credentials()` - Test Bilibili configuration
 - `test_spotify_credentials()` - Test Spotify API configuration
+- `test_reddit_credentials()` - Test Reddit API configuration
 
 ## 💬 Usage Examples
 
@@ -352,6 +416,12 @@ The system automatically handles all token management - no manual maintenance re
 - "Show me my recently played music and find patterns"
 - "What are my top tracks from the past month?"
 - "Find new music recommendations based on my Spotify data"
+
+### Reddit Activity Analysis
+- "What communities am I most active in on Reddit?"
+- "Show me my recent Reddit posts and comments"
+- "What's my karma breakdown across different subreddits?"
+- "Find my saved Reddit content and analyze my interests"
 
 ## 🚀 Development
 
@@ -381,6 +451,7 @@ Use these tools to test your setup:
 test_steam_credentials()
 test_youtube_credentials()
 test_bilibili_credentials()
+test_reddit_credentials()
 
 # Check overall status
 get_personalization_status()

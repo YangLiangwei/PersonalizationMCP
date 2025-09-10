@@ -12,6 +12,7 @@ from platforms.steam.steam_mcp import setup_steam_mcp
 from platforms.youtube.youtube_mcp import setup_youtube_mcp
 from platforms.bilibili.bilibili_mcp import setup_bilibili_mcp
 from platforms.spotify.spotify_mcp import setup_spotify_mcp
+from platforms.reddit.reddit_mcp import setup_reddit_mcp
 
 # Create main MCP server
 mcp = FastMCP("PersonalHub")
@@ -42,6 +43,9 @@ def setup_all_platforms():
     # Spotify integration
     setup_spotify_mcp(mcp)
     
+    # Reddit integration
+    setup_reddit_mcp(mcp)
+    
     # Future platform integrations can be added here:
     # setup_twitter_mcp(mcp)
     # setup_github_mcp(mcp)
@@ -53,6 +57,7 @@ def get_personalization_status() -> str:
     youtube_configured = bool(os.getenv("YOUTUBE_API_KEY"))
     bilibili_configured = bool(os.getenv("BILIBILI_SESSDATA") and os.getenv("BILIBILI_BILI_JCT"))
     spotify_configured = bool(os.getenv("SPOTIFY_CLIENT_ID") and os.getenv("SPOTIFY_CLIENT_SECRET"))
+    reddit_configured = bool(os.getenv("REDDIT_CLIENT_ID") and os.getenv("REDDIT_CLIENT_SECRET"))
     
     status_info = f"""PersonalHub Server Status:
 
@@ -60,11 +65,12 @@ def get_personalization_status() -> str:
 🎥 YouTube Integration: {'✅ Active' if youtube_configured else '❌ Not configured'}
 📺 Bilibili Integration: {'✅ Active' if bilibili_configured else '❌ Not configured'}
 🎵 Spotify Integration: {'✅ Active' if spotify_configured else '❌ Not configured'}
+📱 Reddit Integration: {'✅ Active' if reddit_configured else '❌ Not configured'}
 🐦 Twitter Integration: ⏳ Coming soon
 💻 GitHub Integration: ⏳ Coming soon
 
-Server Version: 1.3.0
-Total Platforms: {sum([steam_configured, youtube_configured, bilibili_configured, spotify_configured])} active, 2 planned
+Server Version: 1.4.0
+Total Platforms: {sum([steam_configured, youtube_configured, bilibili_configured, spotify_configured, reddit_configured])} active, 2 planned
 
 Configuration Status:
 - Steam API: {'Ready' if steam_configured else 'Needs setup'}

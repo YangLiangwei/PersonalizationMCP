@@ -95,6 +95,14 @@
 - 音乐库管理：保存的曲目、专辑、节目、单集、有声读物
 - 播放列表操作：查看和管理个人播放列表
 
+### 💬 Reddit 集成
+- 完整的 OAuth2 认证和自动令牌管理
+- 访问用户账户信息、karma分解和偏好设置
+- 获取发布的帖子、评论和用户活动概览
+- 查看保存的内容、隐藏的帖子和投票历史
+- 探索订阅的社区和版主权限
+- 消息系统访问（收件箱、未读、已发送消息）
+
 ## 📦 安装和设置
 
 ### 1. 安装依赖
@@ -231,6 +239,23 @@ SPOTIFY_REDIRECT_URI=https://example.com/callback
 # OAuth2 令牌在认证后自动管理
 ```
 
+### 💬 Reddit API 设置
+
+> 📖 **详细设置指南**：[platforms/reddit/README.md](platforms/reddit/README.md) | [中文指南](platforms/reddit/README_zh.md)
+
+**快速总结**：
+1. 在 [Reddit Apps](https://www.reddit.com/prefs/apps) 创建 Reddit 应用
+2. 配置为"web app"并设置重定向 URI
+3. 使用 MCP 工具进行 OAuth2 认证和自动令牌管理
+
+**配置：**
+```bash
+REDDIT_CLIENT_ID=your_reddit_client_id_here
+REDDIT_CLIENT_SECRET=your_reddit_client_secret_here
+REDDIT_REDIRECT_URI=http://localhost:8888/callback
+# OAuth2 令牌在认证后自动管理
+```
+
 ## 🖥️ Cursor 配置
 
 将 MCP 服务器添加到你的 Cursor 设置中：
@@ -248,7 +273,9 @@ SPOTIFY_REDIRECT_URI=https://example.com/callback
         "YOUTUBE_API_KEY": "your_youtube_api_key",
         "BILIBILI_SESSDATA": "your_bilibili_sessdata",
         "BILIBILI_BILI_JCT": "your_bilibili_bili_jct",
-        "BILIBILI_BUVID3": "your_bilibili_buvid3"
+        "BILIBILI_BUVID3": "your_bilibili_buvid3",
+        "REDDIT_CLIENT_ID": "your_reddit_client_id",
+        "REDDIT_CLIENT_SECRET": "your_reddit_client_secret"
       }
     }
   }
@@ -268,7 +295,9 @@ SPOTIFY_REDIRECT_URI=https://example.com/callback
         "YOUTUBE_API_KEY": "your_youtube_api_key",
         "BILIBILI_SESSDATA": "your_bilibili_sessdata",
         "BILIBILI_BILI_JCT": "your_bilibili_bili_jct",
-        "BILIBILI_BUVID3": "your_bilibili_buvid3"
+        "BILIBILI_BUVID3": "your_bilibili_buvid3",
+        "REDDIT_CLIENT_ID": "your_reddit_client_id",
+        "REDDIT_CLIENT_SECRET": "your_reddit_client_secret"
       }
     }
   }
@@ -288,7 +317,9 @@ SPOTIFY_REDIRECT_URI=https://example.com/callback
         "YOUTUBE_API_KEY": "your_youtube_api_key",
         "BILIBILI_SESSDATA": "your_bilibili_sessdata",
         "BILIBILI_BILI_JCT": "your_bilibili_bili_jct",
-        "BILIBILI_BUVID3": "your_bilibili_buvid3"
+        "BILIBILI_BUVID3": "your_bilibili_buvid3",
+        "REDDIT_CLIENT_ID": "your_reddit_client_id",
+        "REDDIT_CLIENT_SECRET": "your_reddit_client_secret"
       }
     }
   }
@@ -388,6 +419,38 @@ python3 auto_refresh_youtube_token.py
 - `get_user_saved_shows()` / `get_user_saved_episodes()` - 播客内容
 - `get_current_user_playlists()` / `get_playlist_items()` - 播放列表操作
 
+### 💬 Reddit 工具（共 25 个）
+
+**认证和配置工具（6 个）：**
+- `test_reddit_credentials()` - 测试 API 凭据
+- `setup_reddit_oauth()` - 初始化 OAuth 流程
+- `complete_reddit_oauth()` - 完成 OAuth 认证
+- `get_reddit_token_status()` - 获取令牌状态
+- `refresh_reddit_token()` - 手动刷新令牌
+- `auto_refresh_reddit_token_if_needed()` - 自动令牌管理
+
+**账户信息工具（6 个）：**
+- `get_user_subreddits()` - 获取订阅的社区
+- `get_user_trophies()` - 获取 Reddit 奖杯和成就
+- `get_user_preferences()` - 获取账户设置
+- `get_user_karma_breakdown()` - 获取 karma 分布
+- `get_moderated_subreddits()` - 获取管理的社区
+- `get_contributor_subreddits()` - 获取贡献者权限
+
+**内容和活动工具（10 个）：**
+- `get_user_submitted_posts()` - 获取发布的帖子
+- `get_user_comments()` - 获取评论历史
+- `get_user_overview()` - 获取混合活动时间线
+- `get_saved_content()` - 获取保存的帖子/评论
+- `get_hidden_posts()` - 获取隐藏的内容
+- `get_upvoted_content()` - 获取点赞的内容
+- `get_downvoted_content()` - 获取点踩的内容
+
+**消息工具（3 个）：**
+- `get_inbox_messages()` - 获取收件箱消息
+- `get_unread_messages()` - 获取未读消息
+- `get_sent_messages()` - 获取已发送消息
+
 ### 🔧 系统工具
 - `test_connection()` - 测试 MCP 服务器是否正常工作
 - `get_personalization_status()` - 获取整体平台状态
@@ -395,6 +458,7 @@ python3 auto_refresh_youtube_token.py
 - `test_youtube_credentials()` - 测试 YouTube API 配置
 - `test_bilibili_credentials()` - 测试 Bilibili 配置
 - `test_spotify_credentials()` - 测试 Spotify API 配置
+- `test_reddit_credentials()` - 测试 Reddit API 配置
 
 ## 💬 使用示例
 
@@ -420,6 +484,12 @@ python3 auto_refresh_youtube_token.py
 - "显示我的播放模式并发现音乐偏好"
 - "我这个月的热门曲目是什么？"
 - "基于我的 Spotify 数据寻找新的音乐推荐"
+
+### Reddit 活动分析
+- "我在 Reddit 上最活跃的社区是哪些？"
+- "显示我最近的 Reddit 帖子和评论"
+- "我在不同 subreddit 的 karma 分布是怎样的？"
+- "找到我保存的 Reddit 内容并分析我的兴趣"
 
 ## 🚀 开发
 
@@ -449,6 +519,7 @@ python server.py
 test_steam_credentials()
 test_youtube_credentials()
 test_bilibili_credentials()
+test_reddit_credentials()
 
 # 检查整体状态
 get_personalization_status()
