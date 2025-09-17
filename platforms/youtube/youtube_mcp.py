@@ -221,7 +221,7 @@ def setup_youtube_mcp(mcp: FastMCP):
                 "instructions": [
                     f"1. 在任何设备上打开浏览器访问: {device_info.get('verification_url', 'https://www.google.com/device')}",
                     f"2. 输入代码: {device_info.get('user_code')}",
-                    "3. 使用你的Google账户登录并授权PersonalHub",
+                    "3. 使用你的Google账户登录并授权PersonalizationMCP",
                     "4. 完成授权后，调用 complete_youtube_oauth 工具完成设置"
                 ],
                 "next_tool": "complete_youtube_oauth",

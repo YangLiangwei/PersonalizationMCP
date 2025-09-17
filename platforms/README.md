@@ -1,6 +1,6 @@
 # Platform Integrations
 
-This directory contains all platform-specific integrations for the PersonalHub server.
+This directory contains all platform-specific integrations for the PersonalizationMCP server.
 
 ## Structure
 

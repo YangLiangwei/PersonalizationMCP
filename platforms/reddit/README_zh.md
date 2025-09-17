@@ -9,7 +9,7 @@ Reddit平台集成模块，支持OAuth2认证和完整的Reddit API访问功能�
 1. 访问 [Reddit Apps](https://www.reddit.com/prefs/apps)
 2. 点击 "Create App" 或 "Create Another App"
 3. 填写应用信息：
-   - **Name**: 应用名称（如：PersonalHub）
+   - **Name**: 应用名称（如：PersonalizationMCP）
    - **App type**: 选择 "web app"
    - **Description**: 应用描述（可选）
    - **About URL**: 关于页面URL（可选）

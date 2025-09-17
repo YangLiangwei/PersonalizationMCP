@@ -1,6 +1,6 @@
 # Bilibili Platform Integration
 
-This module provides Bilibili API integration for the PersonalHub server.
+This module provides Bilibili API integration for the PersonalizationMCP server.
 
 ## Features
 

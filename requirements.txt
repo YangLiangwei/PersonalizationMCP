@@ -1,4 +1,4 @@
-# PersonalHub - Unified Personal Data Hub
+# PersonalizationMCP - Unified Personal Data Hub
 # 
 # Installation Guide:
 # Due to bilibili-api dependency complexity, installation requires multiple steps:

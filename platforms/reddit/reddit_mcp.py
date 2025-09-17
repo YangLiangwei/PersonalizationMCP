@@ -1,5 +1,5 @@
 """
-Reddit MCP tools for PersonalHub.
+Reddit MCP tools for PersonalizationMCP.
 
 This module provides Reddit API integration with OAuth2 authentication
 and personal data access capabilities.
@@ -19,7 +19,7 @@ def setup_reddit_mcp(mcp: FastMCP) -> None:
     
     async def _ensure_valid_oauth_token() -> Optional[str]:
         """Ensure we have a valid OAuth token, refreshing if necessary."""
-        token_manager = RedditTokenManager("/Users/liangweiyang/Desktop/works/PersonalHub/platforms/reddit/reddit_tokens.json")
+        token_manager = RedditTokenManager("/Users/liangweiyang/Desktop/works/PersonalizationMCP/platforms/reddit/reddit_tokens.json")
         return token_manager.get_valid_access_token()
     
     async def _make_reddit_api_request(endpoint: str, access_token: Optional[str] = None) -> Dict[str, Any]:
@@ -34,7 +34,7 @@ def setup_reddit_mcp(mcp: FastMCP) -> None:
         
         headers = {
             "Authorization": f"Bearer {access_token}",
-            "User-Agent": "PersonalHub/1.0.0 (Personal data aggregator)"
+            "User-Agent": "PersonalizationMCP/1.0.0 (Personal data aggregator)"
         }
         
         url = f"https://oauth.reddit.com{endpoint}"
@@ -132,7 +132,7 @@ def setup_reddit_mcp(mcp: FastMCP) -> None:
             tokens = asyncio.run(oauth_helper.exchange_code_for_tokens(authorization_code))
             
             # Save tokens
-            token_manager = RedditTokenManager("/Users/liangweiyang/Desktop/works/PersonalHub/platforms/reddit/reddit_tokens.json")
+            token_manager = RedditTokenManager("/Users/liangweiyang/Desktop/works/PersonalizationMCP/platforms/reddit/reddit_tokens.json")
             token_manager.save_tokens(tokens)
             
             return {
@@ -150,7 +150,7 @@ def setup_reddit_mcp(mcp: FastMCP) -> None:
     def refresh_reddit_token(random_string: str = "") -> Dict[str, Any]:
         """Manually refresh Reddit access token."""
         try:
-            token_manager = RedditTokenManager("/Users/liangweiyang/Desktop/works/PersonalHub/platforms/reddit/reddit_tokens.json")
+            token_manager = RedditTokenManager("/Users/liangweiyang/Desktop/works/PersonalizationMCP/platforms/reddit/reddit_tokens.json")
             tokens = token_manager.load_tokens()
             
             if not tokens or "refresh_token" not in tokens:
@@ -181,7 +181,7 @@ def setup_reddit_mcp(mcp: FastMCP) -> None:
     def auto_refresh_reddit_token_if_needed(random_string: str = "") -> Dict[str, Any]:
         """Auto check and refresh Reddit access token if needed."""
         try:
-            token_manager = RedditTokenManager("/Users/liangweiyang/Desktop/works/PersonalHub/platforms/reddit/reddit_tokens.json")
+            token_manager = RedditTokenManager("/Users/liangweiyang/Desktop/works/PersonalizationMCP/platforms/reddit/reddit_tokens.json")
             access_token = token_manager.get_valid_access_token()
             
             if access_token:
@@ -204,7 +204,7 @@ def setup_reddit_mcp(mcp: FastMCP) -> None:
     def get_reddit_token_status(random_string: str = "") -> Dict[str, Any]:
         """Get Reddit token status information."""
         try:
-            token_manager = RedditTokenManager("/Users/liangweiyang/Desktop/works/PersonalHub/platforms/reddit/reddit_tokens.json")
+            token_manager = RedditTokenManager("/Users/liangweiyang/Desktop/works/PersonalizationMCP/platforms/reddit/reddit_tokens.json")
             return {
                 "status": "success",
                 "token_info": token_manager.get_token_status()

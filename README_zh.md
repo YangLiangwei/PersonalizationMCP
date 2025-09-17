@@ -1,4 +1,4 @@
-# 🎯 PersonalHub
+# 🎯 PersonalizationMCP
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.12+](https://img.shields.io/badge/python-3.12+-blue.svg)](https://www.python.org/downloads/)
@@ -10,8 +10,8 @@
 
 1. **克隆仓库**
    ```bash
-   git clone https://github.com/yourusername/PersonalHub.git
-   cd PersonalHub
+   git clone https://github.com/YangLiangwei/PersonalizationMCP.git
+   cd PersonalizationMCP
    ```
 
 2. **安装依赖**
@@ -43,7 +43,7 @@
      "mcpServers": {
        "personalization-mcp": {
          "command": "/path/to/your/conda/envs/personalhub/bin/python",
-         "args": ["/path/to/PersonalHub/server.py"]
+         "args": ["/path/to/PersonalizationMCP/server.py"]
        }
      }
    }
@@ -57,7 +57,7 @@
      "mcpServers": {
        "personalhub": {
          "command": "uv",
-         "args": ["run", "python", "/path/to/PersonalHub/server.py"]
+         "args": ["run", "python", "/path/to/PersonalizationMCP/server.py"]
        }
      }
    }

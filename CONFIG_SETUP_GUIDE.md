@@ -1,4 +1,4 @@
-# 🔧 PersonalHub 配置设置指南
+# 🔧 PersonalizationMCP 配置设置指南
 
 本指南将帮助你正确配置所有平台的API密钥和认证信息。
 

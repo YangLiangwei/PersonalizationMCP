@@ -1,4 +1,4 @@
-# 🎯 PersonalHub
+# 🎯 PersonalizationMCP
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.12+](https://img.shields.io/badge/python-3.12+-blue.svg)](https://www.python.org/downloads/)
@@ -12,8 +12,8 @@ A unified personal data hub built on MCP (Model Context Protocol) that allows AI
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/YangLiangwei/PersonalHub.git
-   cd PersonalHub
+   git clone https://github.com/YangLiangwei/PersonalizationMCP.git
+   cd PersonalizationMCP
    ```
 
 2. **Install dependencies**

@@ -9,7 +9,7 @@ Reddit platform integration module with OAuth2 authentication and complete Reddi
 1. Visit [Reddit Apps](https://www.reddit.com/prefs/apps)
 2. Click "Create App" or "Create Another App"
 3. Fill in application information:
-   - **Name**: Application name (e.g., PersonalHub)
+   - **Name**: Application name (e.g., PersonalizationMCP)
    - **App type**: Select "web app"
    - **Description**: Application description (optional)
    - **About URL**: About page URL (optional)

@@ -1,6 +1,6 @@
 # Steam 平台集成
 
-本模块为 PersonalHub 服务器提供 Steam API 集成。
+本模块为 PersonalizationMCP 服务器提供 Steam API 集成。
 
 ## 功能特性
 

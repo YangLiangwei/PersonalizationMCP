@@ -1,7 +1,7 @@
 """
 Reddit OAuth2 authentication helper.
 
-This module handles Reddit OAuth2 authentication flow for PersonalHub.
+This module handles Reddit OAuth2 authentication flow for PersonalizationMCP.
 Reddit uses OAuth2 with Authorization Code flow for third-party applications.
 """
 
@@ -80,7 +80,7 @@ class RedditOAuthHelper:
             Token response from Reddit
         """
         headers = {
-            "User-Agent": "PersonalHub/1.0.0 (Personal data aggregator)"
+            "User-Agent": "PersonalizationMCP/1.0.0 (Personal data aggregator)"
         }
         
         # Reddit requires Basic auth with client credentials
@@ -113,7 +113,7 @@ class RedditOAuthHelper:
             New token response
         """
         headers = {
-            "User-Agent": "PersonalHub/1.0.0 (Personal data aggregator)"
+            "User-Agent": "PersonalizationMCP/1.0.0 (Personal data aggregator)"
         }
         
         auth = (self.client_id, self.client_secret)

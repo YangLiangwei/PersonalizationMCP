@@ -1,6 +1,6 @@
 # YouTube 平台集成
 
-本模块为 PersonalHub 服务器提供 YouTube API 集成。
+本模块为 PersonalizationMCP 服务器提供 YouTube API 集成。
 
 ## 功能特性
 
@@ -50,7 +50,7 @@
 2. **创建新项目**
    - 点击顶部的项目选择器
    - 点击"新建项目"
-   - 项目名称：输入 `PersonalHub` 或其他你喜欢的名称
+   - 项目名称：输入 `PersonalizationMCP` 或其他你喜欢的名称
    - 点击"创建"
 
 3. **启用 YouTube Data API v3**
@@ -80,7 +80,7 @@
 - 点击"创建"
 
 #### 2. 填写应用信息
-- 应用名称：`PersonalHub`
+- 应用名称：`PersonalizationMCP`
 - 用户支持电子邮件：选择你的邮箱
 - 开发者联系信息：输入你的邮箱
 - 点击"保存并继续"
@@ -99,7 +99,7 @@
 - 回到"凭据"页面
 - 点击"+ 创建凭据" → "OAuth客户端ID"
 - 应用类型选择："TV and Limited Input device"
-- 名称：`PersonalHub Server`
+- 名称：`PersonalizationMCP Server`
 - 点击"创建"
 
 #### 6. 获取凭据信息
@@ -113,7 +113,7 @@
 
 **方法A: 使用 MCP 工具（推荐）**
 
-在 PersonalHub 运行后，使用内置的 MCP 工具：
+在 PersonalizationMCP 运行后，使用内置的 MCP 工具：
 
 1. **开始 OAuth 设置**
    ```
@@ -139,7 +139,7 @@ python youtube_oauth_helper.py
 1. 系统显示设备代码和验证 URL
 2. 在任何设备上打开浏览器访问 URL
 3. 输入设备代码
-4. 使用 Google 账户登录并授权 PersonalHub
+4. 使用 Google 账户登录并授权 PersonalizationMCP
 5. 令牌自动保存并管理
 
 ### 重要提示
@@ -149,6 +149,6 @@ python youtube_oauth_helper.py
 - 保持凭据文件安全，不要公开分享
 
 ### 故障排除
-- 如果遇到"OAuth app not verified"警告，点击"Advanced" → "Go to PersonalHub (unsafe)"
+- 如果遇到"OAuth app not verified"警告，点击"Advanced" → "Go to PersonalizationMCP (unsafe)"
 - 确保邮箱已添加为 OAuth 同意屏幕的测试用户
 - 确保 YouTube Data API v3 已在 Google Cloud 项目中启用

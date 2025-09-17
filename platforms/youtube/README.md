@@ -1,6 +1,6 @@
 # YouTube Platform Integration
 
-This module provides YouTube API integration for the PersonalHub server.
+This module provides YouTube API integration for the PersonalizationMCP server.
 
 ## Features
 
@@ -49,7 +49,7 @@ This module provides YouTube API integration for the PersonalHub server.
 2. **Create New Project**
    - Click the project selector at the top
    - Click "New Project"
-   - Project name: Enter `PersonalHub` or any name you prefer
+   - Project name: Enter `PersonalizationMCP` or any name you prefer
    - Click "Create"
 
 3. **Enable YouTube Data API v3**
@@ -79,7 +79,7 @@ This module provides YouTube API integration for the PersonalHub server.
 - Click "CREATE"
 
 #### 2. Fill App Information
-- App name: `PersonalHub`
+- App name: `PersonalizationMCP`
 - User support email: Select your email
 - Developer contact information: Enter your email
 - Click "SAVE AND CONTINUE"
@@ -98,7 +98,7 @@ This module provides YouTube API integration for the PersonalHub server.
 - Go back to "Credentials" page
 - Click "+ CREATE CREDENTIALS" → "OAuth client ID"
 - Application type: Select "TV and Limited Input device"
-- Name: `PersonalHub Server`
+- Name: `PersonalizationMCP Server`
 - Click "CREATE"
 
 #### 6. Get Credentials Information
@@ -112,7 +112,7 @@ This module provides YouTube API integration for the PersonalHub server.
 
 **Method A: Using MCP Tools (Recommended)**
 
-After PersonalHub is running, use the built-in MCP tools:
+After PersonalizationMCP is running, use the built-in MCP tools:
 
 1. **Start OAuth Setup**
    ```
@@ -138,7 +138,7 @@ python youtube_oauth_helper.py
 1. System displays device code and verification URL
 2. Open browser on any device and visit the URL
 3. Enter the device code
-4. Sign in with Google account and authorize PersonalHub
+4. Sign in with Google account and authorize PersonalizationMCP
 5. Tokens are automatically saved and managed
 
 ### Important Notes
@@ -148,6 +148,6 @@ python youtube_oauth_helper.py
 - Keep credentials file secure, don't share publicly
 
 ### Troubleshooting
-- If you encounter "OAuth app not verified" warning, click "Advanced" → "Go to PersonalHub (unsafe)"
+- If you encounter "OAuth app not verified" warning, click "Advanced" → "Go to PersonalizationMCP (unsafe)"
 - Make sure your email is added as a test user in OAuth consent screen
 - Ensure YouTube Data API v3 is enabled in your Google Cloud project

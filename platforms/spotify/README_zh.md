@@ -1,6 +1,6 @@
 # Spotify 平台集成
 
-此模块为 PersonalHub 提供全面的 Spotify API 集成，允许访问个人音乐数据、偏好和用户交互功能。
+此模块为 PersonalizationMCP 提供全面的 Spotify API 集成，允许访问个人音乐数据、偏好和用户交互功能。
 
 ## 功能特性
 

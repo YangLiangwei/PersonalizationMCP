@@ -1,6 +1,6 @@
 # Steam Platform Integration
 
-This module provides Steam API integration for the PersonalHub server.
+This module provides Steam API integration for the PersonalizationMCP server.
 
 ## Features
 

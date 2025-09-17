@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-PersonalHub MCP Server
+PersonalizationMCP Server
 Main server that integrates multiple platforms for personalized AI interactions.
 """
 
@@ -15,7 +15,7 @@ from platforms.spotify.spotify_mcp import setup_spotify_mcp
 from platforms.reddit.reddit_mcp import setup_reddit_mcp
 
 # Create main MCP server
-mcp = FastMCP("PersonalHub")
+mcp = FastMCP("PersonalizationMCP")
 
 @mcp.tool()
 def add(a: int, b: int) -> int:
@@ -59,7 +59,7 @@ def get_personalization_status() -> str:
     spotify_configured = bool(os.getenv("SPOTIFY_CLIENT_ID") and os.getenv("SPOTIFY_CLIENT_SECRET"))
     reddit_configured = bool(os.getenv("REDDIT_CLIENT_ID") and os.getenv("REDDIT_CLIENT_SECRET"))
     
-    status_info = f"""PersonalHub Server Status:
+    status_info = f"""PersonalizationMCP Server Status:
 
 🎮 Steam Integration: {'✅ Active' if steam_configured else '❌ Not configured'}
 🎥 YouTube Integration: {'✅ Active' if youtube_configured else '❌ Not configured'}

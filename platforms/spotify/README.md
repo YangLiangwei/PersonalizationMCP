@@ -1,6 +1,6 @@
 # Spotify Platform Integration
 
-This module provides comprehensive Spotify API integration for PersonalHub, allowing access to personal music data, preferences, and user interactions.
+This module provides comprehensive Spotify API integration for PersonalizationMCP, allowing access to personal music data, preferences, and user interactions.
 
 ## Features
 

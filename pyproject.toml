@@ -26,9 +26,9 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/yourusername/PersonalHub"
-Repository = "https://github.com/yourusername/PersonalHub"
-Issues = "https://github.com/yourusername/PersonalHub/issues"
+Homepage = "https://github.com/yourusername/PersonalizationMCP"
+Repository = "https://github.com/yourusername/PersonalizationMCP"
+Issues = "https://github.com/yourusername/PersonalizationMCP/issues"
 
 [project.scripts]
 personalhub = "server:main"
