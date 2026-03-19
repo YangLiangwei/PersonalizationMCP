@@ -11,6 +11,8 @@ from typing import Callable, Iterable
 
 from mcp.server.fastmcp import FastMCP
 
+from services.status_service import build_personalization_status
+
 # Import platform modules
 from platforms.steam.steam_mcp import setup_steam_mcp
 from platforms.youtube.youtube_mcp import setup_youtube_mcp
@@ -82,37 +84,6 @@ def _build_tool_filter(mcp: FastMCP, allowed_tools: set[str] | None) -> None:
         return decorator
 
     mcp.tool = filtered_tool
-
-
-def build_personalization_status() -> str:
-    """Build overall personalization server status string."""
-    steam_configured = bool(os.getenv("STEAM_API_KEY") and os.getenv("STEAM_USER_ID"))
-    youtube_configured = bool(os.getenv("YOUTUBE_API_KEY"))
-    bilibili_configured = bool(os.getenv("BILIBILI_SESSDATA") and os.getenv("BILIBILI_BILI_JCT"))
-    spotify_configured = bool(os.getenv("SPOTIFY_CLIENT_ID") and os.getenv("SPOTIFY_CLIENT_SECRET"))
-    reddit_configured = bool(os.getenv("REDDIT_CLIENT_ID") and os.getenv("REDDIT_CLIENT_SECRET"))
-
-    status_info = f"""PersonalizationMCP Server Status:
-
-🎮 Steam Integration: {'✅ Active' if steam_configured else '❌ Not configured'}
-🎥 YouTube Integration: {'✅ Active' if youtube_configured else '❌ Not configured'}
-📺 Bilibili Integration: {'✅ Active' if bilibili_configured else '❌ Not configured'}
-🎵 Spotify Integration: {'✅ Active' if spotify_configured else '❌ Not configured'}
-📱 Reddit Integration: {'✅ Active' if reddit_configured else '❌ Not configured'}
-🐦 Twitter Integration: ⏳ Coming soon
-💻 GitHub Integration: ⏳ Coming soon
-
-Server Version: 1.5.0
-Total Platforms: {sum([steam_configured, youtube_configured, bilibili_configured, spotify_configured, reddit_configured])} active, 2 planned
-
-Configuration Status:
-- Steam API: {'Ready' if steam_configured else 'Needs setup'}
-- YouTube API: {'Ready' if youtube_configured else 'Needs setup'}
-- Bilibili API: {'Ready' if bilibili_configured else 'Needs setup'}
-- Spotify API: {'Ready' if spotify_configured else 'Needs setup'}
-- Reddit API: {'Ready' if reddit_configured else 'Needs setup'}
-"""
-    return status_info
 
 
 def create_mcp_server(profile: str = "full", extra_allowed_tools: Iterable[str] | None = None) -> FastMCP:

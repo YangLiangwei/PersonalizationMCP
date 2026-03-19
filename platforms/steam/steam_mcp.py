@@ -8,6 +8,8 @@ import httpx
 from typing import Dict
 from mcp.server.fastmcp import FastMCP
 
+from services.steam_service import SteamService
+
 # Steam API configuration
 STEAM_API_KEY = os.getenv("STEAM_API_KEY")
 STEAM_USER_ID = os.getenv("STEAM_USER_ID")
@@ -19,13 +21,7 @@ def setup_steam_mcp(mcp: FastMCP):
     @mcp.tool()
     def test_steam_credentials() -> str:
         """Test Steam API credentials."""
-        steam_key = os.getenv("STEAM_API_KEY")
-        steam_id = os.getenv("STEAM_USER_ID")
-        
-        if not steam_key or not steam_id:
-            return "❌ Steam API credentials not found in environment variables"
-        
-        return f"✅ Steam API credentials found: Key={steam_key[:8]}..., ID={steam_id}"
+        return SteamService.credentials_status()
 
     @mcp.tool()
     def get_steam_library(steamid: str = None) -> str:
@@ -34,62 +30,7 @@ def setup_steam_mcp(mcp: FastMCP):
         Args:
             steamid: Optional Steam ID. If not provided, uses your own Steam ID.
         """
-        steam_key = os.getenv("STEAM_API_KEY")
-        user_steam_id = os.getenv("STEAM_USER_ID")
-        
-        if not steam_key or not user_steam_id:
-            return "Steam API credentials not configured"
-        
-        # Use provided steamid or default to user's own Steam ID
-        target_steamid = steamid if steamid else user_steam_id
-        
-        try:
-            url = f"http://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/"
-            params = {
-                "key": steam_key,
-                "steamid": target_steamid,
-                "format": "json",
-                "include_appinfo": 1,
-                "include_played_free_games": 1
-            }
-            
-            response = httpx.get(url, params=params)
-            response.raise_for_status()
-            
-            data = response.json()
-            if "response" in data and "games" in data["response"]:
-                games = data["response"]["games"]
-                
-                # Sort by playtime
-                games_sorted = sorted(games, key=lambda x: x.get("playtime_forever", 0), reverse=True)
-                total_games = len(games_sorted)
-                total_playtime = sum(game.get("playtime_forever", 0) for game in games_sorted)
-                recent_games = [g for g in games_sorted if g.get("playtime_2weeks", 0) > 0]
-                
-                library_info = f"""Steam Game Library (Detailed):
-Total Games: {total_games}
-Total Playtime: {round(total_playtime / 60, 1)} hours
-Average Hours per Game: {round((total_playtime / 60) / max(total_games, 1), 1)}
-
-Top 10 Most Played Games:
-"""
-                for i, game in enumerate(games_sorted[:10], 1):
-                    hours = round(game.get("playtime_forever", 0) / 60, 1)
-                    library_info += f"{i}. {game.get('name')} - {hours} hours\n"
-                
-                if recent_games:
-                    library_info += f"\nRecently Active Games ({len(recent_games)}):\n"
-                    for game in recent_games[:5]:
-                        recent_hours = round(game.get("playtime_2weeks", 0) / 60, 1)
-                        total_hours = round(game.get("playtime_forever", 0) / 60, 1)
-                        library_info += f"- {game.get('name')} - {recent_hours}h (2 weeks), {total_hours}h (total)\n"
-                
-                return library_info
-            else:
-                return "No games found or profile is private"
-                
-        except Exception as e:
-            return f"Error fetching Steam library: {str(e)}"
+        return SteamService.get_library(steamid=steamid)
 
     @mcp.tool()
     def get_steam_friends(steamid: str = None) -> str:
@@ -197,50 +138,7 @@ Games and Playtime:
         Args:
             steamid: Optional Steam ID. If not provided, uses your own Steam ID.
         """
-        steam_key = os.getenv("STEAM_API_KEY")
-        user_steam_id = os.getenv("STEAM_USER_ID")
-        
-        if not steam_key or not user_steam_id:
-            return "Steam API credentials not configured"
-        
-        # Use provided steamid or default to user's own Steam ID
-        target_steamid = steamid if steamid else user_steam_id
-        
-        try:
-            url = f"http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/"
-            params = {
-                "key": steam_key,
-                "steamids": target_steamid,
-                "format": "json"
-            }
-            
-            response = httpx.get(url, params=params)
-            response.raise_for_status()
-            
-            data = response.json()
-            if "response" in data and "players" in data["response"] and data["response"]["players"]:
-                player = data["response"]["players"][0]
-                
-                persona_states = {
-                    0: "Offline", 1: "Online", 2: "Busy", 3: "Away", 
-                    4: "Snooze", 5: "Looking to trade", 6: "Looking to play"
-                }
-                
-                profile_info = f"""Steam Profile Information:
-Name: {player.get('personaname')}
-Status: {persona_states.get(player.get('personastate', 0), 'Unknown')}
-Profile: {player.get('profileurl')}
-Real Name: {player.get('realname', 'Not set')}
-Country: {player.get('loccountrycode', 'Not set')}
-Currently Playing: {player.get('gameextrainfo', 'Nothing')}
-Profile Visibility: {'Public' if player.get('communityvisibilitystate') == 3 else 'Private'}
-"""
-                return profile_info
-            else:
-                return "Profile information not available"
-                
-        except Exception as e:
-            return f"Error fetching profile: {str(e)}"
+        return SteamService.get_profile(steamid=steamid)
 
     @mcp.tool()
     def get_steam_config() -> str:
@@ -266,34 +164,7 @@ Steam ID: {steam_id if steam_id else 'Not set'}
         Args:
             steamid: Optional Steam ID. If not provided, uses your own Steam ID.
         """
-        steam_key = os.getenv("STEAM_API_KEY")
-        user_steam_id = os.getenv("STEAM_USER_ID")
-        
-        if not steam_key or not user_steam_id:
-            return {"error": "Steam API credentials not configured"}
-        
-        # Use provided steamid or default to user's own Steam ID
-        target_steamid = steamid if steamid else user_steam_id
-        
-        url = f"http://api.steampowered.com/IPlayerService/GetRecentlyPlayedGames/v0001/"
-        params = {
-            "key": steam_key,
-            "steamid": target_steamid,
-            "format": "json"
-        }
-        
-        response = httpx.get(url, params=params)
-        response.raise_for_status()
-        
-        data = response.json()
-        if "response" in data and "games" in data["response"]:
-            return {
-                "steamid": target_steamid,
-                "recent_games": data["response"]["games"],
-                "total_recent_games": data["response"]["total_count"]
-            }
-        else:
-            return {"steamid": target_steamid, "message": "No recent activity found"}
+        return SteamService.get_recent_activity(steamid=steamid)
 
     @mcp.tool()
     def get_player_summary(steamids: str = None) -> Dict:

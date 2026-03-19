@@ -7,9 +7,12 @@ import os
 
 import typer
 
-from server import TOOL_PROFILES, build_personalization_status, create_mcp_server
+from server import TOOL_PROFILES, create_mcp_server
+from services.status_service import build_personalization_status
+from services.steam_service import SteamService
 
 app = typer.Typer(help="PersonalizationMCP command line tool")
+steam_app = typer.Typer(help="Steam commands")
 
 
 @app.command("profiles")
@@ -48,6 +51,27 @@ def serve(
         typer.echo(f"Extra allowed tools: {', '.join(extra)}")
 
     create_mcp_server(profile=profile, extra_allowed_tools=extra).run()
+
+
+@steam_app.command("credentials")
+def steam_credentials() -> None:
+    """Check Steam credential status."""
+    typer.echo(SteamService.credentials_status())
+
+
+@steam_app.command("library")
+def steam_library(steamid: str = typer.Option(None, help="Steam ID (defaults to STEAM_USER_ID)")) -> None:
+    """Show Steam game library summary."""
+    typer.echo(SteamService.get_library(steamid=steamid))
+
+
+@steam_app.command("profile")
+def steam_profile(steamid: str = typer.Option(None, help="Steam ID (defaults to STEAM_USER_ID)")) -> None:
+    """Show Steam profile summary."""
+    typer.echo(SteamService.get_profile(steamid=steamid))
+
+
+app.add_typer(steam_app, name="steam")
 
 
 def main() -> None:

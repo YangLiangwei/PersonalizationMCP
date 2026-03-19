@@ -437,6 +437,14 @@ personalhub serve --profile full
 
 # See available profiles
 personalhub profiles
+
+# Show integration status
+personalhub status
+
+# Run direct Steam commands (without MCP)
+personalhub steam credentials
+personalhub steam library
+personalhub steam profile
 ```
 
 **If using conda:**
