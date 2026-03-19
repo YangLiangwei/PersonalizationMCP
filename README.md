@@ -423,6 +423,19 @@ The system automatically handles all token management - no manual maintenance re
 - "What's my karma breakdown across different subreddits?"
 - "Find my saved Reddit content and analyze my interests"
 
+## 🧩 Skills (CLI-oriented)
+
+This repo now includes standalone skills under `skills/` that map directly to `personalhub` CLI workflows:
+
+- `personalhub-status`
+- `personalhub-steam`
+- `personalhub-youtube`
+- `personalhub-bilibili`
+- `personalhub-spotify`
+- `personalhub-reddit`
+
+Each skill is independent (no nested skill execution) and optimized for concise diagnostics/actions.
+
 ## 🚀 Development
 
 ### Running the Server

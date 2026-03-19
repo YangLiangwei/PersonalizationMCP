@@ -491,6 +491,19 @@ python3 auto_refresh_youtube_token.py
 - "我在不同 subreddit 的 karma 分布是怎样的？"
 - "找到我保存的 Reddit 内容并分析我的兴趣"
 
+## 🧩 Skills（面向 CLI）
+
+仓库已新增 `skills/` 目录，将 `personalhub` CLI 能力拆分为独立 skills：
+
+- `personalhub-status`
+- `personalhub-steam`
+- `personalhub-youtube`
+- `personalhub-bilibili`
+- `personalhub-spotify`
+- `personalhub-reddit`
+
+每个 skill 独立触发，不做嵌套执行，输出风格保持简洁。
+
 ## 🚀 开发
 
 ### 运行服务器
