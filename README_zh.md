@@ -495,6 +495,7 @@ python3 auto_refresh_youtube_token.py
 
 仓库已新增 `skills/` 目录，将 `personalhub` CLI 能力拆分为独立 skills：
 
+- `personalhub-manager`（聚合管理 skill）
 - `personalhub-status`
 - `personalhub-steam`
 - `personalhub-youtube`

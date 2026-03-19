@@ -427,6 +427,7 @@ The system automatically handles all token management - no manual maintenance re
 
 This repo now includes standalone skills under `skills/` that map directly to `personalhub` CLI workflows:
 
+- `personalhub-manager` (aggregate manager skill)
 - `personalhub-status`
 - `personalhub-steam`
 - `personalhub-youtube`
