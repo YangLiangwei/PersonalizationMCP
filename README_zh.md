@@ -540,6 +540,12 @@ test_reddit_credentials()
 get_personalization_status()
 ```
 
+CLI 引导配置示例：
+```bash
+personalhub onboarding --platform steam,youtube
+personalhub onboarding --all
+```
+
 ### 添加新平台
 1. 创建新的 `platform_mcp.py` 文件
 2. 使用 `@mcp.tool()` 装饰器实现平台特定的工具

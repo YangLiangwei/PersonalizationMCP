@@ -456,6 +456,10 @@ personalhub profiles
 # Show integration status
 personalhub status
 
+# Interactive onboarding (recommended for first-time setup)
+personalhub onboarding --platform steam,youtube
+personalhub onboarding --all
+
 # Run direct Steam commands (without MCP)
 personalhub steam credentials
 personalhub steam library

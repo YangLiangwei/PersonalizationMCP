@@ -8,6 +8,7 @@ import os
 import typer
 
 from server import TOOL_PROFILES, create_mcp_server
+from services.config_store import load_config_into_env, set_config_values
 from services.status_service import build_personalization_status
 from services.steam_service import SteamService
 from services.youtube_service import YouTubeService
@@ -21,6 +22,20 @@ youtube_app = typer.Typer(help="YouTube commands")
 spotify_app = typer.Typer(help="Spotify commands")
 reddit_app = typer.Typer(help="Reddit commands")
 bilibili_app = typer.Typer(help="Bilibili commands")
+
+PLATFORM_REQUIREMENTS: dict[str, dict[str, list[str]]] = {
+    "steam": {"required": ["STEAM_API_KEY", "STEAM_USER_ID"], "optional": []},
+    "youtube": {"required": ["YOUTUBE_API_KEY"], "optional": []},
+    "bilibili": {"required": ["BILIBILI_SESSDATA", "BILIBILI_BILI_JCT"], "optional": ["BILIBILI_BUVID3"]},
+    "spotify": {
+        "required": ["SPOTIFY_CLIENT_ID", "SPOTIFY_CLIENT_SECRET"],
+        "optional": ["SPOTIFY_REDIRECT_URI"],
+    },
+    "reddit": {
+        "required": ["REDDIT_CLIENT_ID", "REDDIT_CLIENT_SECRET"],
+        "optional": ["REDDIT_REDIRECT_URI"],
+    },
+}
 
 
 @app.command("profiles")
@@ -38,6 +53,94 @@ def list_profiles() -> None:
 def status() -> None:
     """Show personalization integration status (same as MCP tool output)."""
     typer.echo(build_personalization_status())
+
+
+def _normalize_platforms(platform: str, all_platforms: bool) -> list[str]:
+    if all_platforms:
+        return list(PLATFORM_REQUIREMENTS.keys())
+
+    if not platform.strip():
+        raise typer.BadParameter("Use --platform steam,youtube or --all")
+
+    selected = [p.strip().lower() for p in platform.split(",") if p.strip()]
+    invalid = [p for p in selected if p not in PLATFORM_REQUIREMENTS]
+    if invalid:
+        raise typer.BadParameter(f"Unknown platform(s): {', '.join(invalid)}")
+    return selected
+
+
+def _run_credentials_check(platform: str) -> str:
+    if platform == "steam":
+        return SteamService.credentials_status()
+    if platform == "youtube":
+        return YouTubeService.credentials_status()
+    if platform == "bilibili":
+        return BilibiliService.credentials_status()
+    if platform == "spotify":
+        return SpotifyService.credentials_status()
+    if platform == "reddit":
+        return str(RedditService.credentials_status())
+    return "Unsupported platform"
+
+
+@app.command("onboarding")
+def onboarding(
+    platform: str = typer.Option("", help="Comma-separated platforms: steam,youtube,bilibili,spotify,reddit"),
+    all_platforms: bool = typer.Option(False, "--all", help="Configure all platforms"),
+    dry_run: bool = typer.Option(False, help="Only show missing fields, do not write config"),
+    config_file: str = typer.Option("", help="Config file path relative to project root (default: config)"),
+) -> None:
+    """Interactive credentials onboarding for one or more platforms."""
+    load_config_into_env(config_file or None)
+    targets = _normalize_platforms(platform, all_platforms)
+
+    configured: list[str] = []
+    needs_input: list[str] = []
+
+    for p in targets:
+        req = PLATFORM_REQUIREMENTS[p]
+        updates: dict[str, str] = {}
+
+        typer.echo(f"\n[{p}] setup")
+        for key in req["required"]:
+            current = os.getenv(key, "")
+            if current:
+                typer.echo(f"- {key}: already set")
+                continue
+            if dry_run:
+                needs_input.append(f"{p}:{key}")
+                continue
+            value = typer.prompt(f"Enter {key}").strip()
+            if not value:
+                needs_input.append(f"{p}:{key}")
+            else:
+                updates[key] = value
+
+        for key in req["optional"]:
+            current = os.getenv(key, "")
+            if current or dry_run:
+                continue
+            value = typer.prompt(f"Enter {key} (optional)", default="", show_default=False).strip()
+            if value:
+                updates[key] = value
+
+        if updates and not dry_run:
+            set_config_values(updates, config_file or None)
+
+        result = _run_credentials_check(p)
+        typer.echo(f"- credentials: {result}")
+
+        if "❌" in result or "not found" in result.lower() or "not configured" in result.lower():
+            needs_input.append(p)
+        else:
+            configured.append(p)
+
+    typer.echo("\nConfigured:")
+    typer.echo(", ".join(sorted(set(configured))) if configured else "(none)")
+    typer.echo("Needs input:")
+    typer.echo(", ".join(sorted(set(needs_input))) if needs_input else "(none)")
+    typer.echo("Next step:")
+    typer.echo("Run `personalhub status` to verify global readiness.")
 
 
 @app.command("serve")
@@ -177,6 +280,7 @@ app.add_typer(bilibili_app, name="bilibili")
 
 
 def main() -> None:
+    load_config_into_env()
     app()
 
 

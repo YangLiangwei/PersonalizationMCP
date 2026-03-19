@@ -11,6 +11,8 @@ from typing import Callable, Iterable
 
 from mcp.server.fastmcp import FastMCP
 
+from services.config_store import load_config_into_env
+
 from services.status_service import build_personalization_status
 
 # Import platform modules
@@ -135,6 +137,7 @@ def main() -> None:
     - MCP_TOOL_PROFILE: full|safe|minimal (default: full)
     - MCP_EXTRA_ALLOWED_TOOLS: comma-separated extra tool names
     """
+    load_config_into_env()
     profile = os.getenv("MCP_TOOL_PROFILE", "full").strip() or "full"
     extra = [x.strip() for x in os.getenv("MCP_EXTRA_ALLOWED_TOOLS", "").split(",") if x.strip()]
     mcp = create_mcp_server(profile=profile, extra_allowed_tools=extra)
