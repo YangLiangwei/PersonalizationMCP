@@ -445,6 +445,11 @@ personalhub status
 personalhub steam credentials
 personalhub steam library
 personalhub steam profile
+
+# Run direct YouTube commands (without MCP)
+personalhub youtube credentials
+personalhub youtube search -q "lofi"
+personalhub youtube trending --region-code US
 ```
 
 **If using conda:**

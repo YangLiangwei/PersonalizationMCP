@@ -8,6 +8,7 @@ import httpx
 from typing import Dict, List
 from mcp.server.fastmcp import FastMCP
 from .youtube_token_manager import get_token_manager
+from services.youtube_service import YouTubeService
 
 # YouTube API configuration
 YOUTUBE_API_KEY = os.getenv("YOUTUBE_API_KEY")
@@ -83,12 +84,7 @@ def setup_youtube_mcp(mcp: FastMCP):
     @mcp.tool()
     def test_youtube_credentials() -> str:
         """Test YouTube API credentials."""
-        api_key = os.getenv("YOUTUBE_API_KEY")
-        
-        if not api_key:
-            return "❌ YouTube API key not found in environment variables"
-        
-        return f"✅ YouTube API key found: Key={api_key[:8]}..."
+        return YouTubeService.credentials_status()
     
     @mcp.tool()
     def refresh_youtube_token() -> Dict:
@@ -507,218 +503,24 @@ def setup_youtube_mcp(mcp: FastMCP):
     @mcp.tool()
     def search_youtube_videos(query: str, max_results: int = 10) -> Dict:
         """Search YouTube videos by query."""
-        api_key = os.getenv("YOUTUBE_API_KEY")
-        
-        if not api_key:
-            return {"error": "YouTube API key not configured"}
-        
-        if not query:
-            return {"error": "Search query is required"}
-        
-        try:
-            url = "https://www.googleapis.com/youtube/v3/search"
-            params = {
-                "key": api_key,
-                "q": query,
-                "part": "snippet",
-                "type": "video",
-                "maxResults": min(max_results, 50),  # API limit
-                "order": "relevance"
-            }
-            
-            response = httpx.get(url, params=params)
-            response.raise_for_status()
-            
-            data = response.json()
-            
-            if "items" in data:
-                videos = []
-                for item in data["items"]:
-                    video_info = {
-                        "video_id": item["id"]["videoId"],
-                        "title": item["snippet"]["title"],
-                        "channel": item["snippet"]["channelTitle"],
-                        "description": item["snippet"]["description"][:200] + "..." if len(item["snippet"]["description"]) > 200 else item["snippet"]["description"],
-                        "published_at": item["snippet"]["publishedAt"],
-                        "thumbnail": item["snippet"]["thumbnails"]["medium"]["url"],
-                        "url": f"https://www.youtube.com/watch?v={item['id']['videoId']}"
-                    }
-                    videos.append(video_info)
-                
-                return {
-                    "query": query,
-                    "total_results": data.get("pageInfo", {}).get("totalResults", 0),
-                    "videos": videos
-                }
-            else:
-                return {"error": "No videos found"}
-                
-        except Exception as e:
-            return {"error": f"Failed to search videos: {str(e)}"}
+        return YouTubeService.search_videos(query=query, max_results=max_results)
 
     @mcp.tool()
     def get_video_details(video_id: str) -> Dict:
         """Get detailed information about a specific YouTube video."""
-        api_key = os.getenv("YOUTUBE_API_KEY")
-        
-        if not api_key:
-            return {"error": "YouTube API key not configured"}
-        
-        if not video_id:
-            return {"error": "Video ID is required"}
-        
-        try:
-            url = "https://www.googleapis.com/youtube/v3/videos"
-            params = {
-                "key": api_key,
-                "id": video_id,
-                "part": "snippet,statistics,contentDetails"
-            }
-            
-            response = httpx.get(url, params=params)
-            response.raise_for_status()
-            
-            data = response.json()
-            
-            if "items" in data and data["items"]:
-                video = data["items"][0]
-                
-                # Parse duration (PT4M13S format)
-                duration = video["contentDetails"]["duration"]
-                
-                return {
-                    "video_id": video_id,
-                    "title": video["snippet"]["title"],
-                    "channel": video["snippet"]["channelTitle"],
-                    "description": video["snippet"]["description"],
-                    "published_at": video["snippet"]["publishedAt"],
-                    "duration": duration,
-                    "view_count": video["statistics"].get("viewCount", "N/A"),
-                    "like_count": video["statistics"].get("likeCount", "N/A"),
-                    "comment_count": video["statistics"].get("commentCount", "N/A"),
-                    "thumbnail": video["snippet"]["thumbnails"]["high"]["url"],
-                    "url": f"https://www.youtube.com/watch?v={video_id}",
-                    "tags": video["snippet"].get("tags", [])
-                }
-            else:
-                return {"error": "Video not found"}
-                
-        except Exception as e:
-            return {"error": f"Failed to fetch video details: {str(e)}"}
+        return YouTubeService.get_video_details(video_id=video_id)
 
     @mcp.tool()
     def get_channel_info(channel_id: str) -> Dict:
         """Get information about a YouTube channel."""
-        api_key = os.getenv("YOUTUBE_API_KEY")
-        
-        if not api_key:
-            return {"error": "YouTube API key not configured"}
-        
-        if not channel_id:
-            return {"error": "Channel ID is required"}
-        
-        try:
-            url = "https://www.googleapis.com/youtube/v3/channels"
-            params = {
-                "key": api_key,
-                "id": channel_id,
-                "part": "snippet,statistics,contentDetails"
-            }
-            
-            response = httpx.get(url, params=params)
-            response.raise_for_status()
-            
-            data = response.json()
-            
-            if "items" in data and data["items"]:
-                channel = data["items"][0]
-                
-                return {
-                    "channel_id": channel_id,
-                    "title": channel["snippet"]["title"],
-                    "description": channel["snippet"]["description"],
-                    "published_at": channel["snippet"]["publishedAt"],
-                    "subscriber_count": channel["statistics"].get("subscriberCount", "Hidden"),
-                    "video_count": channel["statistics"].get("videoCount", "N/A"),
-                    "view_count": channel["statistics"].get("viewCount", "N/A"),
-                    "thumbnail": channel["snippet"]["thumbnails"]["high"]["url"],
-                    "url": f"https://www.youtube.com/channel/{channel_id}",
-                    "country": channel["snippet"].get("country", "N/A")
-                }
-            else:
-                return {"error": "Channel not found"}
-                
-        except Exception as e:
-            return {"error": f"Failed to fetch channel info: {str(e)}"}
+        return YouTubeService.get_channel_info(channel_id=channel_id)
 
     @mcp.tool()
     def get_trending_videos(region_code: str = "US", max_results: int = 10) -> Dict:
         """Get trending YouTube videos for a specific region."""
-        api_key = os.getenv("YOUTUBE_API_KEY")
-        
-        if not api_key:
-            return {"error": "YouTube API key not configured"}
-        
-        try:
-            url = "https://www.googleapis.com/youtube/v3/videos"
-            params = {
-                "key": api_key,
-                "part": "snippet,statistics",
-                "chart": "mostPopular",
-                "regionCode": region_code,
-                "maxResults": min(max_results, 50)
-            }
-            
-            response = httpx.get(url, params=params)
-            response.raise_for_status()
-            
-            data = response.json()
-            
-            if "items" in data:
-                videos = []
-                for item in data["items"]:
-                    video_info = {
-                        "video_id": item["id"],
-                        "title": item["snippet"]["title"],
-                        "channel": item["snippet"]["channelTitle"],
-                        "view_count": item["statistics"].get("viewCount", "N/A"),
-                        "like_count": item["statistics"].get("likeCount", "N/A"),
-                        "published_at": item["snippet"]["publishedAt"],
-                        "thumbnail": item["snippet"]["thumbnails"]["medium"]["url"],
-                        "url": f"https://www.youtube.com/watch?v={item['id']}"
-                    }
-                    videos.append(video_info)
-                
-                return {
-                    "region": region_code,
-                    "trending_videos": videos
-                }
-            else:
-                return {"error": "No trending videos found"}
-                
-        except Exception as e:
-            return {"error": f"Failed to fetch trending videos: {str(e)}"}
+        return YouTubeService.get_trending(region_code=region_code, max_results=max_results)
 
     @mcp.tool()
     def get_youtube_config() -> str:
         """Get YouTube API configuration status."""
-        api_key = os.getenv("YOUTUBE_API_KEY")
-        
-        config_info = f"""YouTube API Configuration:
-API Key: {'✅ Configured' if api_key else '❌ Not configured'}
-Status: {'🟢 Ready for public data' if api_key else '🔴 Incomplete'}
-
-API Key Preview: {api_key[:8] + '...' if api_key else 'Not set'}
-
-Available Features:
-✅ Video search
-✅ Video details
-✅ Channel information
-✅ Trending videos
-⚠️  User subscriptions (requires OAuth2)
-⚠️  Watch history (requires OAuth2)
-⚠️  Playlists (requires OAuth2)
-
-Note: Personal data requires OAuth2 authentication setup.
-"""
-        return config_info
+        return YouTubeService.get_config()

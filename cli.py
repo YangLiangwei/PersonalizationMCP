@@ -10,9 +10,11 @@ import typer
 from server import TOOL_PROFILES, create_mcp_server
 from services.status_service import build_personalization_status
 from services.steam_service import SteamService
+from services.youtube_service import YouTubeService
 
 app = typer.Typer(help="PersonalizationMCP command line tool")
 steam_app = typer.Typer(help="Steam commands")
+youtube_app = typer.Typer(help="YouTube commands")
 
 
 @app.command("profiles")
@@ -72,6 +74,33 @@ def steam_profile(steamid: str = typer.Option(None, help="Steam ID (defaults to 
 
 
 app.add_typer(steam_app, name="steam")
+
+
+@youtube_app.command("credentials")
+def youtube_credentials() -> None:
+    """Check YouTube credential status."""
+    typer.echo(YouTubeService.credentials_status())
+
+
+@youtube_app.command("search")
+def youtube_search(
+    query: str = typer.Option(..., "--query", "-q", help="Search query"),
+    max_results: int = typer.Option(10, help="Max results (<=50)"),
+) -> None:
+    """Search YouTube videos."""
+    typer.echo(YouTubeService.search_videos(query=query, max_results=max_results))
+
+
+@youtube_app.command("trending")
+def youtube_trending(
+    region_code: str = typer.Option("US", help="Region code"),
+    max_results: int = typer.Option(10, help="Max results (<=50)"),
+) -> None:
+    """Show YouTube trending videos."""
+    typer.echo(YouTubeService.get_trending(region_code=region_code, max_results=max_results))
+
+
+app.add_typer(youtube_app, name="youtube")
 
 
 def main() -> None:
