@@ -427,6 +427,18 @@ The system automatically handles all token management - no manual maintenance re
 
 ### Running the Server
 
+**Recommended (CLI with tool exposure profiles):**
+```bash
+# Safer default: expose a curated subset of tools
+personalhub serve --profile safe
+
+# Legacy behavior: expose all tools
+personalhub serve --profile full
+
+# See available profiles
+personalhub profiles
+```
+
 **If using conda:**
 ```bash
 conda activate personalhub
