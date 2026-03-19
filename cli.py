@@ -11,10 +11,14 @@ from server import TOOL_PROFILES, create_mcp_server
 from services.status_service import build_personalization_status
 from services.steam_service import SteamService
 from services.youtube_service import YouTubeService
+from services.spotify_service import SpotifyService
+from services.reddit_service import RedditService
 
 app = typer.Typer(help="PersonalizationMCP command line tool")
 steam_app = typer.Typer(help="Steam commands")
 youtube_app = typer.Typer(help="YouTube commands")
+spotify_app = typer.Typer(help="Spotify commands")
+reddit_app = typer.Typer(help="Reddit commands")
 
 
 @app.command("profiles")
@@ -101,6 +105,48 @@ def youtube_trending(
 
 
 app.add_typer(youtube_app, name="youtube")
+
+
+@spotify_app.command("credentials")
+def spotify_credentials() -> None:
+    """Check Spotify credential status."""
+    typer.echo(SpotifyService.credentials_status())
+
+
+@spotify_app.command("token-status")
+def spotify_token_status() -> None:
+    """Show Spotify OAuth token status."""
+    typer.echo(SpotifyService.token_status())
+
+
+@spotify_app.command("recent")
+def spotify_recent(limit: int = typer.Option(20, help="Number of recently played tracks (<=50)")) -> None:
+    """Show recently played Spotify tracks."""
+    typer.echo(SpotifyService.get_recently_played(limit=limit))
+
+
+app.add_typer(spotify_app, name="spotify")
+
+
+@reddit_app.command("credentials")
+def reddit_credentials() -> None:
+    """Check Reddit credential status."""
+    typer.echo(RedditService.credentials_status())
+
+
+@reddit_app.command("token-status")
+def reddit_token_status() -> None:
+    """Show Reddit OAuth token status."""
+    typer.echo(RedditService.token_status())
+
+
+@reddit_app.command("subreddits")
+def reddit_subreddits(limit: int = typer.Option(20, help="Number of subscribed subreddits (<=100)")) -> None:
+    """Show subscribed Reddit communities."""
+    typer.echo(RedditService.get_user_subreddits(limit=limit))
+
+
+app.add_typer(reddit_app, name="reddit")
 
 
 def main() -> None:

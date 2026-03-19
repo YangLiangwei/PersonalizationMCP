@@ -12,6 +12,7 @@ from mcp.server.fastmcp import FastMCP
 import os
 from .reddit_oauth_helper import RedditOAuthHelper
 from .reddit_token_manager import RedditTokenManager
+from services.reddit_service import RedditService
 
 
 def setup_reddit_mcp(mcp: FastMCP) -> None:
@@ -47,36 +48,12 @@ def setup_reddit_mcp(mcp: FastMCP) -> None:
     @mcp.tool()
     def test_reddit_credentials(random_string: str = "") -> Dict[str, Any]:
         """Test Reddit API credentials."""
-        client_id = os.getenv("REDDIT_CLIENT_ID")
-        client_secret = os.getenv("REDDIT_CLIENT_SECRET")
-        
-        if not client_id or not client_secret:
-            return {"result": "❌ Reddit API credentials not found in config"}
-        
-        # Mask the client ID for security
-        masked_id = client_id[:8] + "..."
-        return {"result": f"✅ Reddit API credentials found: Client ID={masked_id}"}
+        return RedditService.credentials_status()
     
     @mcp.tool()
     def get_reddit_config(random_string: str = "") -> Dict[str, Any]:
         """Get Reddit API configuration status."""
-        client_id = os.getenv("REDDIT_CLIENT_ID")
-        client_secret = os.getenv("REDDIT_CLIENT_SECRET")
-        redirect_uri = os.getenv("REDDIT_REDIRECT_URI")
-        
-        if not client_id or not client_secret:
-            return {
-                "status": "not_configured",
-                "message": "Reddit API not configured"
-            }
-        
-        return {
-            "status": "configured",
-            "has_client_id": bool(client_id),
-            "has_client_secret": bool(client_secret),
-            "has_redirect_uri": bool(redirect_uri),
-            "redirect_uri": redirect_uri
-        }
+        return RedditService.get_config()
     
     @mcp.tool()
     def setup_reddit_oauth(client_id: str, client_secret: str, redirect_uri: str = "") -> Dict[str, Any]:
@@ -149,90 +126,23 @@ def setup_reddit_mcp(mcp: FastMCP) -> None:
     @mcp.tool()
     def refresh_reddit_token(random_string: str = "") -> Dict[str, Any]:
         """Manually refresh Reddit access token."""
-        try:
-            token_manager = RedditTokenManager("/Users/liangweiyang/Desktop/works/PersonalizationMCP/platforms/reddit/reddit_tokens.json")
-            tokens = token_manager.load_tokens()
-            
-            if not tokens or "refresh_token" not in tokens:
-                return {
-                    "status": "error",
-                    "message": "No refresh token available"
-                }
-            
-            new_access_token = token_manager._refresh_token(tokens["refresh_token"])
-            
-            if new_access_token:
-                return {
-                    "status": "success",
-                    "message": "✅ Reddit token refreshed successfully"
-                }
-            else:
-                return {
-                    "status": "error", 
-                    "message": "Failed to refresh token"
-                }
-        except Exception as e:
-            return {
-                "status": "error",
-                "message": f"Token refresh failed: {str(e)}"
-            }
+        return RedditService.refresh_token()
     
     @mcp.tool()
     def auto_refresh_reddit_token_if_needed(random_string: str = "") -> Dict[str, Any]:
         """Auto check and refresh Reddit access token if needed."""
-        try:
-            token_manager = RedditTokenManager("/Users/liangweiyang/Desktop/works/PersonalizationMCP/platforms/reddit/reddit_tokens.json")
-            access_token = token_manager.get_valid_access_token()
-            
-            if access_token:
-                return {
-                    "status": "success",
-                    "message": "✅ Reddit token is valid or has been refreshed"
-                }
-            else:
-                return {
-                    "status": "error",
-                    "message": "No valid token available, please re-authenticate"
-                }
-        except Exception as e:
-            return {
-                "status": "error", 
-                "message": f"Auto refresh failed: {str(e)}"
-            }
+        return RedditService.auto_refresh_if_needed()
     
     @mcp.tool()
     def get_reddit_token_status(random_string: str = "") -> Dict[str, Any]:
         """Get Reddit token status information."""
-        try:
-            token_manager = RedditTokenManager("/Users/liangweiyang/Desktop/works/PersonalizationMCP/platforms/reddit/reddit_tokens.json")
-            return {
-                "status": "success",
-                "token_info": token_manager.get_token_status()
-            }
-        except Exception as e:
-            return {
-                "status": "error",
-                "message": f"Failed to get token status: {str(e)}"
-            }
+        return RedditService.token_status()
     
     # Basic Reddit API tools
     @mcp.tool()
     def get_current_user_profile(access_token: str = "") -> Dict[str, Any]:
         """Get current user's Reddit profile information."""
-        try:
-            result = asyncio.run(_make_reddit_api_request("/api/v1/me", access_token or None))
-            if "status" in result and result["status"] == "error":
-                return result
-            
-            return {
-                "status": "success",
-                "user_profile": result
-            }
-        except Exception as e:
-            return {
-                "status": "error",
-                "message": f"Failed to get user profile: {str(e)}"
-            }
+        return RedditService.get_current_user_profile(access_token=access_token)
     
     @mcp.tool() 
     def get_user_subreddits(access_token: str = "", limit: int = 100) -> Dict[str, Any]:
@@ -243,23 +153,7 @@ def setup_reddit_mcp(mcp: FastMCP) -> None:
             access_token: Optional access token
             limit: Number of subreddits to return (1-100, default 100)
         """
-        try:
-            limit = max(1, min(limit, 100))  # Ensure limit is between 1 and 100
-            endpoint = f"/subreddits/mine/subscriber?limit={limit}"
-            
-            result = asyncio.run(_make_reddit_api_request(endpoint, access_token or None))
-            if "status" in result and result["status"] == "error":
-                return result
-            
-            return {
-                "status": "success",
-                "subreddits": result
-            }
-        except Exception as e:
-            return {
-                "status": "error",
-                "message": f"Failed to get user subreddits: {str(e)}"
-            }
+        return RedditService.get_user_subreddits(access_token=access_token, limit=limit)
     
     # === 用户基本信息 API ===
     

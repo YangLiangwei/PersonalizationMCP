@@ -10,6 +10,7 @@ from typing import Dict, List, Optional
 from mcp.server.fastmcp import FastMCP
 from .spotify_oauth_helper import SpotifyOAuthHelper
 from .spotify_token_manager import SpotifyTokenManager
+from services.spotify_service import SpotifyService
 
 # Spotify API configuration
 SPOTIFY_CLIENT_ID = os.getenv("SPOTIFY_CLIENT_ID")
@@ -66,32 +67,12 @@ def setup_spotify_mcp(mcp: FastMCP):
     @mcp.tool()
     def test_spotify_credentials() -> str:
         """Test Spotify API credentials."""
-        client_id = os.getenv("SPOTIFY_CLIENT_ID")
-        client_secret = os.getenv("SPOTIFY_CLIENT_SECRET")
-        
-        if not client_id or not client_secret:
-            return "❌ Spotify API credentials not found in environment variables"
-        
-        return f"✅ Spotify API credentials found: Client ID={client_id[:8]}..."
+        return SpotifyService.credentials_status()
 
     @mcp.tool()
     def get_spotify_config() -> str:
         """Get Spotify API configuration status."""
-        client_id = os.getenv("SPOTIFY_CLIENT_ID")
-        client_secret = os.getenv("SPOTIFY_CLIENT_SECRET")
-        access_token = os.getenv("SPOTIFY_ACCESS_TOKEN")
-        
-        config_status = {
-            "client_id": "✅ Set" if client_id else "❌ Not set",
-            "client_secret": "✅ Set" if client_secret else "❌ Not set",
-            "access_token": "✅ Set" if access_token else "❌ Not set"
-        }
-        
-        status_text = "Spotify API Configuration Status:\n"
-        for key, value in config_status.items():
-            status_text += f"- {key}: {value}\n"
-        
-        return status_text
+        return SpotifyService.get_config()
 
     @mcp.tool()
     def setup_spotify_oauth(client_id: str, client_secret: str, redirect_uri: str = None) -> dict:
@@ -159,91 +140,23 @@ def setup_spotify_mcp(mcp: FastMCP):
     @mcp.tool()
     def refresh_spotify_token() -> dict:
         """Manually refresh Spotify access token"""
-        try:
-            token_manager = SpotifyTokenManager()
-            new_token = token_manager.refresh_access_token()
-            
-            if new_token:
-                return {
-                    "status": "success", 
-                    "message": "✅ Spotify access token refreshed successfully"
-                }
-            else:
-                return {
-                    "status": "error",
-                    "message": "❌ Failed to refresh token. Please re-authenticate."
-                }
-        except Exception as e:
-            return {
-                "status": "error",
-                "message": f"Token refresh failed: {str(e)}"
-            }
+        return SpotifyService.refresh_token()
 
     @mcp.tool()
     def auto_refresh_spotify_token_if_needed() -> dict:
         """Auto check and refresh Spotify access token if needed"""
-        try:
-            token_manager = SpotifyTokenManager()
-            result = token_manager.ensure_valid_token()
-            
-            return {
-                "status": "success",
-                "message": f"✅ Token status: {result['message']}",
-                "token_refreshed": result.get('refreshed', False)
-            }
-        except Exception as e:
-            return {
-                "status": "error",
-                "message": f"Auto refresh failed: {str(e)}"
-            }
+        return SpotifyService.auto_refresh_if_needed()
 
     @mcp.tool()
     def get_spotify_token_status() -> dict:
         """Get Spotify token status information"""
-        try:
-            token_manager = SpotifyTokenManager()
-            status = token_manager.get_token_status()
-            
-            return {
-                "status": "success",
-                "token_info": status
-            }
-        except Exception as e:
-            return {
-                "status": "error",
-                "message": f"Failed to get token status: {str(e)}"
-            }
+        return SpotifyService.token_status()
 
     # User Profile APIs
     @mcp.tool()
     def get_current_user_profile(access_token: str = None) -> dict:
         """Get current user's Spotify profile information."""
-        token, status = _ensure_valid_oauth_token(access_token)
-        if not token:
-            return status
-        
-        try:
-            headers = {"Authorization": f"Bearer {token}"}
-            with httpx.Client() as client:
-                response = client.get("https://api.spotify.com/v1/me", headers=headers)
-                response.raise_for_status()
-                user_data = response.json()
-                
-                return {
-                    "status": "success",
-                    "user_profile": {
-                        "id": user_data.get("id"),
-                        "display_name": user_data.get("display_name"),
-                        "email": user_data.get("email"),
-                        "country": user_data.get("country"),
-                        "followers": user_data.get("followers", {}).get("total", 0),
-                        "product": user_data.get("product"),
-                        "images": user_data.get("images", []),
-                        "external_urls": user_data.get("external_urls", {})
-                    }
-                }
-        except httpx.HTTPError as e:
-            return {"status": "error", "message": f"Failed to get user profile: {e}"}
+        return SpotifyService.get_current_user_profile(access_token=access_token)
 
     @mcp.tool()
     def get_user_profile(user_id: str, access_token: str = None) -> dict:
@@ -652,46 +565,6 @@ def setup_spotify_mcp(mcp: FastMCP):
         Args:
             limit: Number of tracks to return (1-50, default 50)
         """
-        token, status = _ensure_valid_oauth_token(access_token)
-        if not token:
-            return status
-        
-        try:
-            headers = {"Authorization": f"Bearer {token}"}
-            params = {"limit": min(limit, 50)}
-            
-            with httpx.Client() as client:
-                response = client.get("https://api.spotify.com/v1/me/player/recently-played", headers=headers, params=params)
-                response.raise_for_status()
-                data = response.json()
-                
-                # Format the response for better readability
-                items = data.get("items", [])
-                formatted_tracks = []
-                
-                for item in items:
-                    track = item.get("track", {})
-                    artists = ", ".join([artist.get("name", "") for artist in track.get("artists", [])])
-                    
-                    formatted_track = {
-                        "track_name": track.get("name", "Unknown"),
-                        "artists": artists,
-                        "album": track.get("album", {}).get("name", "Unknown"),
-                        "played_at": item.get("played_at", ""),
-                        "duration_ms": track.get("duration_ms", 0),
-                        "external_urls": track.get("external_urls", {}),
-                        "track_id": track.get("id", "")
-                    }
-                    formatted_tracks.append(formatted_track)
-                
-                return {
-                    "status": "success",
-                    "total_tracks": len(formatted_tracks),
-                    "tracks": formatted_tracks,
-                    "next": data.get("next"),
-                    "cursors": data.get("cursors", {})
-                }
-        except httpx.HTTPError as e:
-            return {"status": "error", "message": f"Failed to get recently played tracks: {e}"}
+        return SpotifyService.get_recently_played(limit=limit, access_token=access_token)
 
     print("✅ Spotify MCP tools registered successfully")

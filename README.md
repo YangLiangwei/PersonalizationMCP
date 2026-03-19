@@ -450,6 +450,16 @@ personalhub steam profile
 personalhub youtube credentials
 personalhub youtube search -q "lofi"
 personalhub youtube trending --region-code US
+
+# Run direct Spotify commands
+personalhub spotify credentials
+personalhub spotify token-status
+personalhub spotify recent --limit 20
+
+# Run direct Reddit commands
+personalhub reddit credentials
+personalhub reddit token-status
+personalhub reddit subreddits --limit 20
 ```
 
 **If using conda:**
