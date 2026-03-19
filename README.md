@@ -427,7 +427,8 @@ The system automatically handles all token management - no manual maintenance re
 
 This repo now includes standalone skills under `skills/` that map directly to `personalhub` CLI workflows:
 
-- `personalhub-manager` (aggregate manager skill)
+- `personalhub-onboarding` (unified credential onboarding entry)
+- `personalhub-manager` (aggregate day-2 manager)
 - `personalhub-status`
 - `personalhub-steam`
 - `personalhub-youtube`
@@ -435,7 +436,7 @@ This repo now includes standalone skills under `skills/` that map directly to `p
 - `personalhub-spotify`
 - `personalhub-reddit`
 
-Each skill is independent (no nested skill execution) and optimized for concise diagnostics/actions.
+Pattern: one unified entry + platform-specific skills. Each skill remains independent (no nested execution).
 
 ## 🚀 Development
 

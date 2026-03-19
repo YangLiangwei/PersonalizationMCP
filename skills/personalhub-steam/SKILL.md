@@ -1,21 +1,32 @@
 ---
 name: personalhub-steam
-description: Use PersonalizationMCP Steam CLI commands for game library, profile, and recent activity checks. Trigger when users ask about Steam setup, owned games, playtime, profile, or recent gaming behavior.
+description: Configure and use Steam in PersonalizationMCP. Trigger when users need Steam credential setup, validation, game library lookup, profile checks, or recent activity summaries.
 ---
 
-Use Steam subcommands directly.
+Handle Steam credential setup and usage.
 
-## Commands
+## Required input
+
+- `STEAM_API_KEY`
+- `STEAM_USER_ID`
+
+## Setup flow
+
+1. Ask for missing required values only.
+2. Write/update config entries.
+3. Validate:
 
 ```bash
 personalhub steam credentials
+```
+
+## Usage commands
+
+```bash
 personalhub steam profile
 personalhub steam library
 ```
 
-## Workflow
+## Output
 
-1. Run `personalhub steam credentials` first.
-2. If credentials pass, run `profile` or `library` as requested.
-3. Highlight top findings only (e.g., total games, top playtime).
-4. If credentials fail, return exact missing env vars.
+Return `Ready` or `Needs setup`, then one next action.

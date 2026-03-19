@@ -1,21 +1,36 @@
 ---
 name: personalhub-spotify
-description: Use PersonalizationMCP Spotify CLI commands for credential validation, OAuth token status, and recent listening checks. Trigger when users ask about Spotify setup, token health, or recently played tracks.
+description: Configure and use Spotify in PersonalizationMCP. Trigger when users need Spotify API credential setup, token validation, or recent listening summaries.
 ---
 
-Use Spotify subcommands directly.
+Handle Spotify credential setup and usage.
 
-## Commands
+## Required input
+
+- `SPOTIFY_CLIENT_ID`
+- `SPOTIFY_CLIENT_SECRET`
+
+## Optional input
+
+- `SPOTIFY_REDIRECT_URI`
+
+## Setup flow
+
+1. Ask for required fields first.
+2. Write/update config.
+3. Validate:
 
 ```bash
 personalhub spotify credentials
 personalhub spotify token-status
+```
+
+## Usage command
+
+```bash
 personalhub spotify recent --limit 20
 ```
 
-## Workflow
+## Output
 
-1. Run `credentials` first.
-2. Run `token-status` before user-data queries.
-3. Use `recent` to summarize listening behavior.
-4. On auth failure, report the exact failing step.
+Return `Ready` or `Needs setup`, then one next action.

@@ -495,6 +495,7 @@ python3 auto_refresh_youtube_token.py
 
 仓库已新增 `skills/` 目录，将 `personalhub` CLI 能力拆分为独立 skills：
 
+- `personalhub-onboarding`（统一凭据引导入口）
 - `personalhub-manager`（聚合管理 skill）
 - `personalhub-status`
 - `personalhub-steam`
@@ -503,7 +504,7 @@ python3 auto_refresh_youtube_token.py
 - `personalhub-spotify`
 - `personalhub-reddit`
 
-每个 skill 独立触发，不做嵌套执行，输出风格保持简洁。
+模式：统一入口 + 平台独立 skill。每个 skill 独立触发，不做嵌套执行。
 
 ## 🚀 开发
 

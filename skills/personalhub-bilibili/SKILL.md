@@ -1,21 +1,36 @@
 ---
 name: personalhub-bilibili
-description: Use PersonalizationMCP Bilibili CLI commands for credential checks, video search, and video detail lookup. Trigger when users ask about Bilibili setup, BVID details, or keyword-based content discovery.
+description: Configure and use Bilibili in PersonalizationMCP. Trigger when users need cookie-based credential setup, validation, video search, or BVID detail lookup.
 ---
 
-Use Bilibili subcommands directly.
+Handle Bilibili credential setup and usage.
 
-## Commands
+## Required input
+
+- `BILIBILI_SESSDATA`
+- `BILIBILI_BILI_JCT`
+
+## Optional input
+
+- `BILIBILI_BUVID3`
+
+## Setup flow
+
+1. Ask for missing required cookie fields only.
+2. Write/update config.
+3. Validate:
 
 ```bash
 personalhub bilibili credentials
+```
+
+## Usage commands
+
+```bash
 personalhub bilibili search -k "<keyword>"
 personalhub bilibili video --bvid <BVID>
 ```
 
-## Workflow
+## Output
 
-1. Run `credentials` first.
-2. Use `search` for discovery tasks.
-3. Use `video` when BVID is provided.
-4. If cookies are invalid, state refresh is required.
+Return `Ready` or `Needs setup`, then one next action.

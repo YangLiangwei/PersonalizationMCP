@@ -1,9 +1,9 @@
 ---
 name: personalhub-manager
-description: Manage all PersonalizationMCP platforms through one entry skill. Use when users ask for cross-platform status checks, centralized diagnostics, or unified summaries across Steam, YouTube, Bilibili, Spotify, and Reddit.
+description: Central manager for PersonalizationMCP operations across all platforms. Use for cross-platform health checks, unified summaries, and day-2 maintenance after initial onboarding.
 ---
 
-Act as a single orchestration layer for all platform skills.
+Use this as the operational control skill.
 
 ## Commands
 
@@ -18,13 +18,11 @@ personalhub reddit credentials
 
 ## Workflow
 
-1. Run `personalhub status` first for global view.
-2. Run per-platform `credentials` only for platforms relevant to the request.
-3. For a full audit, run all five credential checks.
-4. Summarize in three blocks: `Ready`, `Needs setup`, `Next action`.
-5. Keep output short and operational.
+1. Run `personalhub status` first.
+2. Run platform `credentials` checks only where needed.
+3. Summarize in: `Ready`, `Needs setup`, `Next action`.
+4. Keep output concise.
 
-## Escalation
+## Boundary
 
-- If one platform fails, give only minimal fix steps for that platform.
-- If multiple platforms fail, prioritize by user-stated importance.
+- For first-time setup, use `personalhub-onboarding` flow.
