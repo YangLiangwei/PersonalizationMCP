@@ -3,7 +3,10 @@
 
 from __future__ import annotations
 
+import json
 import os
+import re
+from typing import Any
 
 import typer
 
@@ -55,6 +58,32 @@ def status() -> None:
     typer.echo(build_personalization_status())
 
 
+def _redact_text(text: str) -> str:
+    # key=value style redaction
+    text = re.sub(r"(?i)(api[_-]?key|client[_-]?secret|access[_-]?token|refresh[_-]?token|sessdata|bili[_-]?jct|buvid3)\s*=\s*[^,\s\n]+", r"\1=***", text)
+    # bare long token-like strings
+    text = re.sub(r"\b[A-Za-z0-9_-]{24,}\b", lambda m: m.group(0)[:6] + "***", text)
+    return text
+
+
+def _normalize_result(platform: str, action: str, raw: Any) -> dict[str, Any]:
+    text = _redact_text(str(raw))
+    lower = text.lower()
+    ok = not any(x in lower for x in ["❌", "error", "not found", "not configured", "failed"])
+    payload: dict[str, Any] = {
+        "ok": ok,
+        "platform": platform,
+        "action": action,
+        "message": text,
+        "next_step": "" if ok else f"Complete {platform} required credentials and re-run `personalhub {platform} credentials`.",
+    }
+    return payload
+
+
+def _emit(payload: dict[str, Any]) -> None:
+    typer.echo(json.dumps(payload, ensure_ascii=False))
+
+
 def _normalize_platforms(platform: str, all_platforms: bool) -> list[str]:
     if all_platforms:
         return list(PLATFORM_REQUIREMENTS.keys())
@@ -69,18 +98,20 @@ def _normalize_platforms(platform: str, all_platforms: bool) -> list[str]:
     return selected
 
 
-def _run_credentials_check(platform: str) -> str:
+def _run_credentials_check(platform: str) -> dict[str, Any]:
     if platform == "steam":
-        return SteamService.credentials_status()
-    if platform == "youtube":
-        return YouTubeService.credentials_status()
-    if platform == "bilibili":
-        return BilibiliService.credentials_status()
-    if platform == "spotify":
-        return SpotifyService.credentials_status()
-    if platform == "reddit":
-        return str(RedditService.credentials_status())
-    return "Unsupported platform"
+        raw = SteamService.credentials_status()
+    elif platform == "youtube":
+        raw = YouTubeService.credentials_status()
+    elif platform == "bilibili":
+        raw = BilibiliService.credentials_status()
+    elif platform == "spotify":
+        raw = SpotifyService.credentials_status()
+    elif platform == "reddit":
+        raw = RedditService.credentials_status()
+    else:
+        raw = "Unsupported platform"
+    return _normalize_result(platform, "credentials", raw)
 
 
 @app.command("onboarding")
@@ -128,9 +159,9 @@ def onboarding(
             set_config_values(updates, config_file or None)
 
         result = _run_credentials_check(p)
-        typer.echo(f"- credentials: {result}")
+        typer.echo(f"- credentials: {result['message']}")
 
-        if "❌" in result or "not found" in result.lower() or "not configured" in result.lower():
+        if not result["ok"]:
             needs_input.append(p)
         else:
             configured.append(p)
@@ -188,7 +219,7 @@ app.add_typer(steam_app, name="steam")
 @youtube_app.command("credentials")
 def youtube_credentials() -> None:
     """Check YouTube credential status."""
-    typer.echo(YouTubeService.credentials_status())
+    _emit(_normalize_result("youtube", "credentials", YouTubeService.credentials_status()))
 
 
 @youtube_app.command("search")
@@ -286,3 +317,4 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+
