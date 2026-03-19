@@ -460,6 +460,11 @@ personalhub spotify recent --limit 20
 personalhub reddit credentials
 personalhub reddit token-status
 personalhub reddit subreddits --limit 20
+
+# Run direct Bilibili commands
+personalhub bilibili credentials
+personalhub bilibili search -k "编程"
+personalhub bilibili video --bvid BV1xx411c7mD
 ```
 
 **If using conda:**

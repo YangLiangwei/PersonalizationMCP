@@ -13,12 +13,14 @@ from services.steam_service import SteamService
 from services.youtube_service import YouTubeService
 from services.spotify_service import SpotifyService
 from services.reddit_service import RedditService
+from services.bilibili_service import BilibiliService
 
 app = typer.Typer(help="PersonalizationMCP command line tool")
 steam_app = typer.Typer(help="Steam commands")
 youtube_app = typer.Typer(help="YouTube commands")
 spotify_app = typer.Typer(help="Spotify commands")
 reddit_app = typer.Typer(help="Reddit commands")
+bilibili_app = typer.Typer(help="Bilibili commands")
 
 
 @app.command("profiles")
@@ -147,6 +149,31 @@ def reddit_subreddits(limit: int = typer.Option(20, help="Number of subscribed s
 
 
 app.add_typer(reddit_app, name="reddit")
+
+
+@bilibili_app.command("credentials")
+def bilibili_credentials() -> None:
+    """Check Bilibili credential status."""
+    typer.echo(BilibiliService.credentials_status())
+
+
+@bilibili_app.command("search")
+def bilibili_search(
+    keyword: str = typer.Option(..., "--keyword", "-k", help="Search keyword"),
+    page: int = typer.Option(1, help="Page number"),
+    order: str = typer.Option("totalrank", help="Sort order"),
+) -> None:
+    """Search Bilibili videos."""
+    typer.echo(BilibiliService.search_videos(keyword=keyword, page=page, order=order))
+
+
+@bilibili_app.command("video")
+def bilibili_video_info(bvid: str = typer.Option(..., "--bvid", help="Bilibili video BVID")) -> None:
+    """Get Bilibili video details."""
+    typer.echo(BilibiliService.get_video_info(bvid=bvid))
+
+
+app.add_typer(bilibili_app, name="bilibili")
 
 
 def main() -> None:

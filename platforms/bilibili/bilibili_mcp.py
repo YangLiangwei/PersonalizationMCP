@@ -9,6 +9,8 @@ from typing import Dict, List, Optional
 from mcp.server.fastmcp import FastMCP
 import nest_asyncio
 
+from services.bilibili_service import BilibiliService
+
 try:
     from bilibili_api import user, video, misc, Credential
     from bilibili_api.exceptions import ResponseCodeException
@@ -67,53 +69,12 @@ def setup_bilibili_mcp(mcp: FastMCP):
     @mcp.tool()
     def test_bilibili_credentials() -> str:
         """Test Bilibili API credentials."""
-        if not BILIBILI_API_AVAILABLE:
-            return "❌ bilibili-api library not installed. Run: pip install bilibili-api"
-        
-        sessdata = os.getenv("BILIBILI_SESSDATA")
-        bili_jct = os.getenv("BILIBILI_BILI_JCT")
-        
-        if not sessdata or not bili_jct:
-            return """❌ Bilibili credentials not found in environment variables
-            
-Required environment variables:
-- BILIBILI_SESSDATA: Your Bilibili SESSDATA cookie
-- BILIBILI_BILI_JCT: Your Bilibili bili_jct cookie
-- BILIBILI_BUVID3: Your Bilibili buvid3 cookie (optional)
-
-To get these values:
-1. Login to bilibili.com in your browser
-2. Open Developer Tools (F12)
-3. Go to Application/Storage tab
-4. Find cookies for bilibili.com
-5. Copy SESSDATA and bili_jct values"""
-        
-        return f"✅ Bilibili credentials found: SESSDATA={sessdata[:8]}..., bili_jct={bili_jct[:8]}..."
+        return BilibiliService.credentials_status()
 
     @mcp.tool()
     def get_bilibili_config() -> str:
         """Get Bilibili API configuration status."""
-        if not BILIBILI_API_AVAILABLE:
-            return "❌ bilibili-api library not installed"
-        
-        credential = get_credential()
-        status = "✅ Ready" if credential else "❌ Not configured"
-        
-        return f"""Bilibili API Configuration:
-        
-Library Status: {'✅ Installed' if BILIBILI_API_AVAILABLE else '❌ Not installed'}
-Credentials: {status}
-Authentication: {'Cookie-based' if credential else 'None'}
-
-Available Features:
-- User profile information ✅
-- Following list ✅  
-- Video search ✅
-- User videos ✅
-- Favorites (requires login) {'✅' if credential else '❌'}
-- Watch history (requires login) {'✅' if credential else '❌'}
-- To-view list (稍后再看) (requires login) {'✅' if credential else '❌'}
-"""
+        return BilibiliService.get_config()
 
     @mcp.tool()
     def get_bilibili_user_info(uid: int) -> Dict:
@@ -246,43 +207,7 @@ Available Features:
             page: Page number (default: 1)
             order: Sort order - totalrank, click, pubdate, dm, stow (default: totalrank)
         """
-        if not BILIBILI_API_AVAILABLE:
-            return {"error": "bilibili-api library not installed"}
-        
-        try:
-            try:
-                search_result = asyncio.run(
-                    misc.web_search_by_type(keyword, search_type="video", 
-                                           page=page, order=order)
-                )
-                
-                videos = []
-                for video_info in search_result.get("result", []):
-                    videos.append({
-                        "bvid": video_info.get("bvid", ""),
-                        "aid": video_info.get("aid", 0),
-                        "title": video_info.get("title", ""),
-                        "description": video_info.get("description", ""),
-                        "author": video_info.get("author", ""),
-                        "mid": video_info.get("mid", 0),
-                        "duration": video_info.get("duration", ""),
-                        "play": video_info.get("play", 0),
-                        "danmaku": video_info.get("video_review", 0),
-                        "pubdate": video_info.get("pubdate", 0),
-                        "pic": video_info.get("pic", ""),
-                        "url": f"https://www.bilibili.com/video/{video_info.get('bvid', '')}"
-                    })
-                
-                return {
-                    "keyword": keyword,
-                    "page": page,
-                    "total_results": search_result.get("numResults", 0),
-                    "videos": videos
-                }
-            except Exception as e:
-                return {"error": f"Failed to execute: {str(e)}"}
-        except Exception as e:
-            return {"error": f"Search failed: {str(e)}"}
+        return BilibiliService.search_videos(keyword=keyword, page=page, order=order)
 
     @mcp.tool()
     def get_bilibili_user_videos(uid: int, page: int = 1) -> Dict:
@@ -334,43 +259,7 @@ Available Features:
         Args:
             bvid: Bilibili video ID (BVID)
         """
-        if not BILIBILI_API_AVAILABLE:
-            return {"error": "bilibili-api library not installed"}
-        
-        try:
-            v = video.Video(bvid=bvid)
-            
-            try:
-                video_info = asyncio.get_event_loop().run_until_complete(v.get_info())
-                
-                return {
-                    "bvid": bvid,
-                    "aid": video_info.get("aid", 0),
-                    "title": video_info.get("title", ""),
-                    "description": video_info.get("desc", ""),
-                    "duration": video_info.get("duration", 0),
-                    "owner": {
-                        "mid": video_info.get("owner", {}).get("mid", 0),
-                        "name": video_info.get("owner", {}).get("name", ""),
-                        "face": video_info.get("owner", {}).get("face", "")
-                    },
-                    "stats": {
-                        "view": video_info.get("stat", {}).get("view", 0),
-                        "danmaku": video_info.get("stat", {}).get("danmaku", 0),
-                        "reply": video_info.get("stat", {}).get("reply", 0),
-                        "favorite": video_info.get("stat", {}).get("favorite", 0),
-                        "coin": video_info.get("stat", {}).get("coin", 0),
-                        "share": video_info.get("stat", {}).get("share", 0),
-                        "like": video_info.get("stat", {}).get("like", 0)
-                    },
-                    "pubdate": video_info.get("pubdate", 0),
-                    "pic": video_info.get("pic", ""),
-                    "url": f"https://www.bilibili.com/video/{bvid}"
-                }
-            except Exception as e:
-                return {"error": f"Failed to execute: {str(e)}"}
-        except Exception as e:
-            return {"error": f"Failed to get video info: {str(e)}"}
+        return BilibiliService.get_video_info(bvid=bvid)
 
 
     @mcp.tool()
