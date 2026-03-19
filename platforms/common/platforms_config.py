@@ -44,39 +44,40 @@ PLATFORMS = {
         required_env_vars=["STEAM_API_KEY", "STEAM_USER_ID"],
         optional_env_vars=[]
     ),
-    
     "youtube": PlatformConfig(
         name="YouTube",
         enabled=True,
         required_env_vars=["YOUTUBE_API_KEY"],
         optional_env_vars=[]
     ),
-    
     "bilibili": PlatformConfig(
         name="Bilibili",
         enabled=True,
         required_env_vars=["BILIBILI_SESSDATA", "BILIBILI_BILI_JCT"],
         optional_env_vars=["BILIBILI_BUVID3"]
     ),
-    
-    # Future platform integrations
     "spotify": PlatformConfig(
         name="Spotify",
-        enabled=False,  # Not implemented yet
+        enabled=True,
         required_env_vars=["SPOTIFY_CLIENT_ID", "SPOTIFY_CLIENT_SECRET"],
-        optional_env_vars=["SPOTIFY_REFRESH_TOKEN"]
+        optional_env_vars=["SPOTIFY_REDIRECT_URI", "SPOTIFY_REFRESH_TOKEN"]
     ),
-    
+    "reddit": PlatformConfig(
+        name="Reddit",
+        enabled=True,
+        required_env_vars=["REDDIT_CLIENT_ID", "REDDIT_CLIENT_SECRET"],
+        optional_env_vars=["REDDIT_REDIRECT_URI", "REDDIT_REFRESH_TOKEN"]
+    ),
+    # Future platform integrations
     "twitter": PlatformConfig(
         name="Twitter/X",
-        enabled=False,  # Not implemented yet
+        enabled=False,
         required_env_vars=["TWITTER_API_KEY", "TWITTER_API_SECRET", "TWITTER_ACCESS_TOKEN"],
         optional_env_vars=["TWITTER_ACCESS_TOKEN_SECRET"]
     ),
-    
     "github": PlatformConfig(
         name="GitHub",
-        enabled=False,  # Not implemented yet
+        enabled=False,
         required_env_vars=["GITHUB_TOKEN"],
         optional_env_vars=["GITHUB_USERNAME"]
     )

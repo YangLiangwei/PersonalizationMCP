@@ -100,6 +100,33 @@ BILIBILI_BUVID3=ABCD-EFGH-IJKL-MNOP-123456789
 - **安全性**：不要在公共场所或不安全的环境中暴露这些Cookie
 - **隐私**：这些Cookie可以访问你的个人Bilibili数据，请妥善保管
 
+## 🎵 Spotify API 配置
+
+1. 访问 [Spotify Developer Dashboard](https://developer.spotify.com/dashboard) 创建应用
+2. 获取 `Client ID` 和 `Client Secret`
+3. 在应用设置中配置 Redirect URI（例如 `http://localhost:8888/callback`）
+
+配置示例：
+```bash
+SPOTIFY_CLIENT_ID=your_spotify_client_id_here
+SPOTIFY_CLIENT_SECRET=your_spotify_client_secret_here
+SPOTIFY_REDIRECT_URI=http://localhost:8888/callback
+```
+
+## 💬 Reddit API 配置
+
+1. 访问 [Reddit Apps](https://www.reddit.com/prefs/apps) 创建应用
+2. 选择 `web app`
+3. 设置 Redirect URI（例如 `http://localhost:8888/callback`）
+4. 获取 `client_id` 和 `client_secret`
+
+配置示例：
+```bash
+REDDIT_CLIENT_ID=your_reddit_client_id_here
+REDDIT_CLIENT_SECRET=your_reddit_client_secret_here
+REDDIT_REDIRECT_URI=http://localhost:8888/callback
+```
+
 ## 📁 配置文件格式
 
 ### 选项1：使用 `config` 文件（推荐）
@@ -117,6 +144,16 @@ YOUTUBE_ACCESS_TOKEN=你的OAuth2访问令牌（可选）
 BILIBILI_SESSDATA=你的SESSDATA值
 BILIBILI_BILI_JCT=你的bili_jct值
 BILIBILI_BUVID3=你的buvid3值
+
+# Spotify配置
+SPOTIFY_CLIENT_ID=你的Spotify_Client_ID
+SPOTIFY_CLIENT_SECRET=你的Spotify_Client_Secret
+SPOTIFY_REDIRECT_URI=http://localhost:8888/callback
+
+# Reddit配置
+REDDIT_CLIENT_ID=你的Reddit_Client_ID
+REDDIT_CLIENT_SECRET=你的Reddit_Client_Secret
+REDDIT_REDIRECT_URI=http://localhost:8888/callback
 ```
 
 ### 选项2：使用 `.env` 文件
@@ -128,6 +165,12 @@ YOUTUBE_API_KEY=你的YouTube_API_Key
 BILIBILI_SESSDATA=你的SESSDATA值
 BILIBILI_BILI_JCT=你的bili_jct值
 BILIBILI_BUVID3=你的buvid3值
+SPOTIFY_CLIENT_ID=你的Spotify_Client_ID
+SPOTIFY_CLIENT_SECRET=你的Spotify_Client_Secret
+SPOTIFY_REDIRECT_URI=http://localhost:8888/callback
+REDDIT_CLIENT_ID=你的Reddit_Client_ID
+REDDIT_CLIENT_SECRET=你的Reddit_Client_Secret
+REDDIT_REDIRECT_URI=http://localhost:8888/callback
 ```
 
 ### 选项3：系统环境变量
@@ -139,6 +182,12 @@ export YOUTUBE_API_KEY="你的YouTube_API_Key"
 export BILIBILI_SESSDATA="你的SESSDATA值"
 export BILIBILI_BILI_JCT="你的bili_jct值"
 export BILIBILI_BUVID3="你的buvid3值"
+export SPOTIFY_CLIENT_ID="你的Spotify_Client_ID"
+export SPOTIFY_CLIENT_SECRET="你的Spotify_Client_Secret"
+export SPOTIFY_REDIRECT_URI="http://localhost:8888/callback"
+export REDDIT_CLIENT_ID="你的Reddit_Client_ID"
+export REDDIT_CLIENT_SECRET="你的Reddit_Client_Secret"
+export REDDIT_REDIRECT_URI="http://localhost:8888/callback"
 ```
 
 ## 🧪 测试配置
@@ -154,6 +203,12 @@ test_youtube_credentials()
 
 # 测试Bilibili配置
 test_bilibili_credentials()
+
+# 测试Spotify配置
+test_spotify_credentials()
+
+# 测试Reddit配置
+test_reddit_credentials()
 
 # 查看整体状态
 get_personalization_status()

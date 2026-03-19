@@ -22,9 +22,17 @@ BILIBILI_SESSDATA=your_bilibili_sessdata_cookie
 BILIBILI_BILI_JCT=your_bilibili_bili_jct_cookie
 BILIBILI_BUVID3=your_bilibili_buvid3_cookie
 
+# Spotify API Configuration
+SPOTIFY_CLIENT_ID=your_spotify_client_id_here
+SPOTIFY_CLIENT_SECRET=your_spotify_client_secret_here
+SPOTIFY_REDIRECT_URI=http://localhost:8888/callback
+
+# Reddit API Configuration
+REDDIT_CLIENT_ID=your_reddit_client_id_here
+REDDIT_CLIENT_SECRET=your_reddit_client_secret_here
+REDDIT_REDIRECT_URI=http://localhost:8888/callback
+
 # Future API keys for other platforms
-# SPOTIFY_CLIENT_ID=your_spotify_client_id
-# SPOTIFY_CLIENT_SECRET=your_spotify_client_secret
 # TWITTER_API_KEY=your_twitter_api_key
 
 
