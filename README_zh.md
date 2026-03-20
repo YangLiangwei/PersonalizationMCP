@@ -544,6 +544,7 @@ CLI 引导配置示例：
 ```bash
 personalhub onboarding --platform steam,youtube
 personalhub onboarding --all
+personalhub onboarding --platform steam --set STEAM_API_KEY=xxx --set STEAM_USER_ID=7656119xxx
 ```
 
 ### 添加新平台

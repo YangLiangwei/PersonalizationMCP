@@ -459,6 +459,7 @@ personalhub status
 # Interactive onboarding (recommended for first-time setup)
 personalhub onboarding --platform steam,youtube
 personalhub onboarding --all
+personalhub onboarding --platform steam --set STEAM_API_KEY=xxx --set STEAM_USER_ID=7656119xxx
 
 # Run direct Steam commands (without MCP)
 personalhub steam credentials

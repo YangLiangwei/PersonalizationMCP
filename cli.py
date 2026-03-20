@@ -84,6 +84,20 @@ def _emit(payload: dict[str, Any]) -> None:
     typer.echo(json.dumps(payload, ensure_ascii=False))
 
 
+def _parse_set_values(values: list[str]) -> dict[str, str]:
+    updates: dict[str, str] = {}
+    for item in values:
+        if "=" not in item:
+            raise typer.BadParameter(f"Invalid --set value '{item}', expected KEY=VALUE")
+        key, value = item.split("=", 1)
+        key = key.strip()
+        value = value.strip()
+        if not key:
+            raise typer.BadParameter(f"Invalid --set key in '{item}'")
+        updates[key] = value
+    return updates
+
+
 def _normalize_platforms(platform: str, all_platforms: bool) -> list[str]:
     if all_platforms:
         return list(PLATFORM_REQUIREMENTS.keys())
@@ -118,11 +132,15 @@ def _run_credentials_check(platform: str) -> dict[str, Any]:
 def onboarding(
     platform: str = typer.Option("", help="Comma-separated platforms: steam,youtube,bilibili,spotify,reddit"),
     all_platforms: bool = typer.Option(False, "--all", help="Configure all platforms"),
+    set_values: list[str] = typer.Option(None, "--set", help="Set KEY=VALUE (repeatable, non-interactive friendly)"),
     dry_run: bool = typer.Option(False, help="Only show missing fields, do not write config"),
     config_file: str = typer.Option("", help="Config file path relative to project root (default: config)"),
 ) -> None:
     """Interactive credentials onboarding for one or more platforms."""
     load_config_into_env(config_file or None)
+    preset_updates = _parse_set_values(set_values or [])
+    if preset_updates and not dry_run:
+        set_config_values(preset_updates, config_file or None)
     targets = _normalize_platforms(platform, all_platforms)
 
     configured: list[str] = []
@@ -198,7 +216,7 @@ def serve(
 @steam_app.command("credentials")
 def steam_credentials() -> None:
     """Check Steam credential status."""
-    typer.echo(SteamService.credentials_status())
+    _emit(_normalize_result("steam", "credentials", SteamService.credentials_status()))
 
 
 @steam_app.command("library")
@@ -267,7 +285,7 @@ app.add_typer(spotify_app, name="spotify")
 @reddit_app.command("credentials")
 def reddit_credentials() -> None:
     """Check Reddit credential status."""
-    typer.echo(RedditService.credentials_status())
+    _emit(_normalize_result("reddit", "credentials", RedditService.credentials_status()))
 
 
 @reddit_app.command("token-status")
@@ -317,4 +335,5 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+
 
