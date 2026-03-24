@@ -8,27 +8,42 @@ A unified personal data hub built on MCP (Model Context Protocol) that allows AI
 
 > 📖 **中文文档**: [README_zh.md](README_zh.md)
 
-## 🚀 Quick Start
+## 🚀 Quick Start (Current Recommended Flow)
 
-1. **Clone the repository**
+1. **Clone and install**
    ```bash
    git clone https://github.com/YangLiangwei/PersonalizationMCP.git
    cd PersonalizationMCP
+   
+   # choose one
+   uv venv && uv sync
+   # or
+   python3 -m venv venv && source venv/bin/activate && pip install -r requirements.txt
    ```
 
-2. **Install dependencies**
-   
-   > 📖 **See detailed installation instructions: [Installation and Setup](#-installation-and-setup)**
-
-3. **Configure your API keys**
+2. **Run onboarding (interactive)**
    ```bash
-   cp config.example config
-   # Edit config file with your actual API keys
+   personalhub onboarding --all
    ```
 
-4. **Add to Cursor settings**
-   
-   > 📖 **See detailed MCP configuration: [Cursor Configuration](#-cursor-configuration)**
+3. **Or run onboarding (non-interactive / scriptable)**
+   ```bash
+   personalhub onboarding --platform steam --set STEAM_API_KEY=xxx --set STEAM_USER_ID=7656119xxx
+   personalhub onboarding --platform youtube --set YOUTUBE_API_KEY=xxx
+   ```
+
+4. **Verify and run**
+   ```bash
+   personalhub status
+   personalhub serve --profile safe
+   ```
+
+## 🧭 How the Project Works Now
+
+- **Unified entry for setup**: `personalhub onboarding`
+- **Unified entry for operations**: `personalhub-manager` skill
+- **Platform-specific flows**: independent skills for Steam / YouTube / Bilibili / Spotify / Reddit
+- **No nested skill execution**: one skill leads a task at a time
 
 ## 🌟 Features
 

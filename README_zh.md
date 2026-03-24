@@ -6,62 +6,42 @@
 
 一个基于 MCP（模型上下文协议）构建的统一个人数据中心，让 AI 助手能够访问你在多个平台的数字生活，提供真正个性化和有上下文的交互体验。
 
-## 🚀 快速开始
+## 🚀 快速开始（当前推荐流程）
 
-1. **克隆仓库**
+1. **克隆并安装**
    ```bash
    git clone https://github.com/YangLiangwei/PersonalizationMCP.git
    cd PersonalizationMCP
+
+   # 二选一
+   uv venv && uv sync
+   # 或
+   python3 -m venv venv && source venv/bin/activate && pip install -r requirements.txt
    ```
 
-2. **安装依赖**
-   
-   **方式 A：使用 conda（推荐）**
+2. **运行引导配置（交互式）**
    ```bash
-   conda create -n personalhub python=3.12
-   conda activate personalhub
-   pip install "mcp[cli]" httpx python-dotenv
-   ```
-   
-   **方式 B：使用 uv**
-   ```bash
-   uv venv
-   uv add "mcp[cli]" httpx python-dotenv
+   personalhub onboarding --all
    ```
 
-3. **配置你的 API 密钥**
+3. **或使用脚本化配置（非交互）**
    ```bash
-   cp config.example config
-   # 编辑 config 文件，填入你的实际 API 密钥
+   personalhub onboarding --platform steam --set STEAM_API_KEY=xxx --set STEAM_USER_ID=7656119xxx
+   personalhub onboarding --platform youtube --set YOUTUBE_API_KEY=xxx
    ```
 
-4. **添加到 Cursor 设置**
-   
-   **如果使用 conda：**
-   ```json
-   {
-     "mcpServers": {
-       "personalization-mcp": {
-         "command": "/path/to/your/conda/envs/personalhub/bin/python",
-         "args": ["/path/to/PersonalizationMCP/server.py"]
-       }
-     }
-   }
+4. **验证并启动**
+   ```bash
+   personalhub status
+   personalhub serve --profile safe
    ```
-   
-   > 💡 **提示**：要查找你的 conda 环境路径，运行：`conda info --envs`
-   
-   **如果使用 uv：**
-   ```json
-   {
-     "mcpServers": {
-       "personalhub": {
-         "command": "uv",
-         "args": ["run", "python", "/path/to/PersonalizationMCP/server.py"]
-       }
-     }
-   }
-   ```
+
+## 🧭 当前项目使用方式
+
+- **统一配置入口**：`personalhub onboarding`
+- **统一运维入口**：`personalhub-manager` skill
+- **平台独立流程**：Steam / YouTube / Bilibili / Spotify / Reddit 各自独立 skill
+- **不做嵌套执行**：单次任务由一个 skill 主导
 
 ## 🌟 功能特性
 
