@@ -635,3 +635,8 @@ If you find this project useful, please consider giving it a star on GitHub!
 
 
 
+
+## Hosted deployment
+
+A hosted deployment is available on [Fronteir AI](https://fronteir.ai/mcp/yangliangwei-personalizationmcp).
+
